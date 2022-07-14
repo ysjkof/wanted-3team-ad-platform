@@ -1,6 +1,6 @@
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from '../Layout';
-import Main from '../pages/Main';
+import Test from '../pages/Test';
 
 function Router() {
   return (
@@ -12,6 +12,7 @@ function Router() {
           <Route path="management" element={<p>광고관리</p>} />
           <Route path="*" element={<div>페이지가 없습니다</div>} />
         </Route>
+        <Route path="/test" element={<Test />} />
       </Routes>
     </BrowserRouter>
   );
