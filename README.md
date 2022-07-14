@@ -25,3 +25,27 @@
 
 - **모바일 드롭다운 메뉴**
   ![ad platform 기획 002](https://user-images.githubusercontent.com/77876601/178675856-43045e16-b9ba-40a9-bf61-bce15cff82a6.jpeg)
+
+## Custom hook documents: for data fetch
+
+### `useMediaQuery` : 매체 현황을 요청한다
+
+훅을 실행하면 `{ loading, mediaReports, queryMediaReports }` 3개 값을 가진 객체를 반환한다.
+
+- 훅이 데이터를 불러오는 동안 `loading`이 `boolean` 값을 갖는다.
+- `mediaReports`은 **매체 현황** 값을 갖는다.
+- `queryMediaReports`에 `queryOption`을 주고 실행하면 option에 따라 **새로운 값을 요청**한다.
+
+### `useIntegrationStatusQuery` : 통합 광고 현황을 요청한다
+
+훅을 실행하면 `{ loading, integrationReports, queryIntegrationStatus }` 3개 값을 가진 객체를 반환한다.
+
+- `integrationReports`은 **매체 현황** 값을 갖는다.
+- `queryIntegrationStatus`에 `queryOption`을 주고 실행하면 option에 따라 **새로운 값을 요청**한다.
+
+### `useAdvertisingManagementQuery` : 광과관리를 요청한다
+
+훅을 실행하면 `{ loading, managementState }` 2개 값을 가진 객체를 반환한다.
+
+- `managementState`은 **매체 현황** 값을 갖는다.
+- `queryOption`을 정하지 않아 query를 작동하는 기능은 없다
