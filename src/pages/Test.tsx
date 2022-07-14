@@ -21,17 +21,28 @@ export default function Test() {
     lte: new Date('2022-02-05'),
   });
 
+  const { managementState, createAdvertising } = useAdvertisingManagementQuery();
+
   const onClick = async () => {
     queryMediaReports({ property: 'date', gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
   };
 
-  const { managementState } = useAdvertisingManagementQuery();
+  const invokeCreateAdvertising = () => {
+    createAdvertising({
+      adType: 'web',
+      budget: 121809324,
+      startDate: new Date(),
+      title: '테스트 광고 생성',
+    });
+  };
 
-  console.log('integrationReports', integrationReports?.report.daily);
-  console.log('mediaReports', mediaReports);
+  // console.log('integrationReports', integrationReports?.report.daily);
+  // console.log('mediaReports', mediaReports);
+  // console.log('managementState', managementState);
   return (
     <Container>
       <button onClick={onClick}>TEST BTN</button>
+      <button onClick={invokeCreateAdvertising}>TEST 광고 생성</button>
       {mediaLoading ? 'loading' : mediaReports?.map((report) => <p>{report.date}</p>)}
     </Container>
   );

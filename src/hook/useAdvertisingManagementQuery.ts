@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
-import { AdvertisingManagement } from '../database/dbTypes';
+import { Advertising, AdvertisingManagement } from '../database/dbTypes';
 import advertisingManagementServices from '../api/advertisingManagementServices';
+
+export interface MutationAdvertisingInpus
+  extends Pick<Advertising, 'adType' | 'title' | 'budget' | 'startDate' | 'endDate'> {}
 
 function useAdvertisingManagementQuery() {
   const [managementState, setMenagementState] = useState<AdvertisingManagement>();
@@ -13,11 +16,19 @@ function useAdvertisingManagementQuery() {
     setLoading(false);
   };
 
+  const createAdvertising = async (mutationAdvertisingInpus: MutationAdvertisingInpus) => {
+    setLoading(true);
+
+    const result = await advertisingManagementServices.createAdvertising(mutationAdvertisingInpus);
+    setLoading(false);
+    return result;
+  };
+
   useEffect(() => {
     queryManagementState();
   }, []);
 
-  return { loading, managementState };
+  return { loading, managementState, createAdvertising };
 }
 
 export default useAdvertisingManagementQuery;

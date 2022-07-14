@@ -33,18 +33,20 @@ export interface AdvertisingManagement {
   count: number;
   ads: Advertising[];
 }
-export interface Advertising {
-  id: number;
-  adType: string;
-  title: string;
-  budget: number;
-  status: string;
-  startDate: Date;
-  endDate?: any;
-  report: Report;
-}
-export interface Report {
+export type AdvertisingStatus = 'active' | 'ended';
+export type AdType = 'web' | 'app';
+export interface AdvertisingReport {
   cost: number;
   convValue: number;
   roas: number;
+}
+export interface Advertising {
+  id: number;
+  title: string;
+  status: AdvertisingStatus;
+  startDate: Date;
+  budget: number;
+  adType: AdType;
+  report?: AdvertisingReport;
+  endDate?: Date;
 }
