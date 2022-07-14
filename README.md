@@ -45,7 +45,20 @@
 
 ### `useAdvertisingManagementQuery` : 광과관리를 요청한다
 
-훅을 실행하면 `{ loading, managementState }` 2개 값을 가진 객체를 반환한다.
+훅을 실행하면 `{ loading, managementState, createAdvertising }` 2개 값을 가진 객체를 반환한다.
 
 - `managementState`은 **매체 현황** 값을 갖는다.
-- `queryOption`을 정하지 않아 query를 작동하는 기능은 없다
+- `createAdvertising`은 광고를 만든다.
+  - 필수 입력 값 `adType`, `title`, `budget`, `startDate`
+  - 선택 입력 값 `endDate`
+
+```ts
+// 광고 새로 만드는 방법
+const { createAdvertising } = useAdvertisingManagementQuery();
+createAdvertising({
+  adType: 'web',
+  budget: 2384710982,
+  startDate: new Date('2022-07-01'),
+  title: '테스트 광고 생성',
+});
+```
