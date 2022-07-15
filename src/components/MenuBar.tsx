@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../theme';
 
 enum TABS {
-  DASHBOARD = 'dashboard',
-  AD_MANAGEMENT = 'management',
+  DASHBOARD = '/dashboard',
+  AD_MANAGEMENT = '/management',
 }
 
 type Props = {
@@ -13,7 +13,9 @@ type Props = {
 };
 
 export default function MenuBar() {
-  const [selectedTab, setSelectedTab] = useState(TABS.DASHBOARD);
+  const { pathname } = useLocation();
+  const initialTab: TABS = Object.values(TABS).find((values) => values === pathname) || TABS.DASHBOARD;
+  const [selectedTab, setSelectedTab] = useState<TABS>(initialTab);
   const toggleTabs = (tabName: TABS) => {
     setSelectedTab(tabName);
   };
