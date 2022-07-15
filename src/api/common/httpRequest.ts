@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { END_POINT_ADVERTISING_MANAGEMENT } from '../../constants/constants';
-import { MutationAdvertisingInpus } from '../../hook/useAdvertisingManagementQuery';
+import { CreateAdvertisingInpus, ModifyAdvertisingInpus } from '../../hook/useAdvertisingManagementQuery';
 
 export interface QueryOptions {
   property: string;
@@ -31,7 +31,7 @@ export class HttpRequest<T> {
 
   getAdvertisingId = (arr: { id: number }[]) => arr.sort((a, b) => b.id - a.id)[0].id + 1 || 1;
 
-  async createAdvertising(advertising: MutationAdvertisingInpus) {
+  async createAdvertising(inputs: CreateAdvertisingInpus) {
     if (this.endPoint !== END_POINT_ADVERTISING_MANAGEMENT) return;
     const prevData = await this.getAll();
     const response = await this.service.post(this.endPoint, {
@@ -44,9 +44,37 @@ export class HttpRequest<T> {
           id: this.getAdvertisingId(prevData['ads']),
           endDate: null,
           report: { cost: 0, convValue: 0, roas: 0 },
-          ...advertising,
+          ...inputs,
         },
       ],
+    });
+    return response.status === 200 && response.data;
+  }
+  async modifyAdvertising(inputs: ModifyAdvertisingInpus) {
+    if (this.endPoint !== END_POINT_ADVERTISING_MANAGEMENT) return;
+    const { count, ads } = await this.getAll();
+
+    const advertisingIdx = ads.findIndex((advertising) => advertising.id === inputs.id);
+    if (advertisingIdx === -1) throw new Error('광고 ID가 없습니다');
+
+    const updatedAdvertising = { ...ads[advertisingIdx], ...inputs };
+    const response = await this.service.post(this.endPoint, {
+      count,
+      ads: [...ads.slice(0, advertisingIdx), updatedAdvertising, ...ads.slice(advertisingIdx + 1)],
+    });
+    return response.status === 200 && response.data;
+  }
+
+  async deleteAdvertising(id: number) {
+    if (this.endPoint !== END_POINT_ADVERTISING_MANAGEMENT) return;
+    const { count, ads } = await this.getAll();
+
+    const deleteThisIdxValue = ads.findIndex((advertising) => advertising.id === id);
+    if (deleteThisIdxValue === -1) throw new Error('광고 ID가 없습니다');
+
+    const response = await this.service.post(this.endPoint, {
+      count,
+      ads: [...ads.slice(0, deleteThisIdxValue), ...ads.slice(deleteThisIdxValue + 1)],
     });
     return response.status === 200 && response.data;
   }

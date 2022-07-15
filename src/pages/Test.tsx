@@ -22,10 +22,18 @@ export default function Test() {
     lte: new Date('2022-02-05'),
   });
 
-  const { managementState, createAdvertising } = useAdvertisingManagementQuery();
+  const { managementState, createAdvertising, modifyAdversising, deleteAdversising } = useAdvertisingManagementQuery();
 
-  const onClick = async () => {
-    queryMediaReports({ property: 'date', gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
+  const invokeTestBtn = async () => {
+    // queryMediaReports({ property: 'date', gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
+    modifyAdversising({
+      id: 5,
+      adType: 'web',
+      // budget: 500,
+      // title: '테스트 광고 수정',
+      status: 'active',
+    });
+    // deleteAdversising(5);
   };
 
   const invokeCreateAdvertising = () => {
@@ -44,8 +52,8 @@ export default function Test() {
 
   return (
     <Container>
-      <button onClick={onClick}>TEST BTN</button>
-      <button onClick={invokeCreateAdvertising}>TEST 광고 생성</button>
+      <button onClick={invokeTestBtn}>테스트 버튼</button>
+      <button onClick={invokeCreateAdvertising}>테스트 광고 생성</button>
       {mediaLoading ? 'loading' : mediaReports?.map((report, idx) => <p key={idx}>{report.date}</p>)}
     </Container>
   );
