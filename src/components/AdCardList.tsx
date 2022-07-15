@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import AdCard from './AdCard';
 
 type AdType = 'web' | 'app';
 type Status = 'active' | 'ended';
+type SelectedStatus = 'all' | Status;
 
 export interface Ad {
   id: number;
@@ -87,12 +89,28 @@ const ads: Ads = {
 };
 
 export default function AdCardList() {
+  const [selectedStatus, setSelectedStatus] = useState<SelectedStatus>('all');
+
+  const handleSelectedStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value as SelectedStatus;
+    setSelectedStatus(value);
+  };
+
+  const filteredAds = ads.ads.filter((ad) => (selectedStatus !== 'all' ? ad.status === selectedStatus : ad));
+
   return (
-    <Container>
-      {ads.ads.map((ad) => {
-        return <AdCard key={ad.id} Content={ad} />;
-      })}
-    </Container>
+    <>
+      <select value={selectedStatus} onChange={handleSelectedStatusChange}>
+        <option value="all">전체 광고</option>
+        <option value="active">현재 진행중</option>
+        <option value="ended">종료</option>
+      </select>
+      <Container>
+        {filteredAds.map((ad) => {
+          return <AdCard key={ad.id} Content={ad} />;
+        })}
+      </Container>
+    </>
   );
 }
 
