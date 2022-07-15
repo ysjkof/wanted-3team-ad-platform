@@ -3,7 +3,6 @@ import { END_POINT_ADVERTISING_MANAGEMENT } from '../../constants/constants';
 import { CreateAdvertisingInpus, ModifyAdvertisingInpus } from '../../hook/useAdvertisingManagementQuery';
 
 export interface QueryOptions {
-  property: string;
   gte: Date;
   lte: Date;
 }
@@ -13,9 +12,12 @@ export class HttpRequest<T> {
     this.service;
     this.endPoint;
   }
+  private readonly QUERY_FIELD = { date: 'date' };
   private readonly removeTimeInDate = (date: Date) => date.toISOString().substring(0, 10);
-  private readonly createBetweenEndpoint = (url: string, { property, gte, lte }: QueryOptions) =>
-    `${url}?${property}_gte=${this.removeTimeInDate(gte)}&${property}_lte=${this.removeTimeInDate(lte)}`;
+  private readonly createBetweenEndpoint = (url: string, { gte, lte }: QueryOptions) =>
+    `${url}?${this.QUERY_FIELD.date}_gte=${this.removeTimeInDate(gte)}&${
+      this.QUERY_FIELD.date
+    }_lte=${this.removeTimeInDate(lte)}`;
 
   async getAll(): Promise<T> {
     const response = await this.service.get(this.endPoint);
