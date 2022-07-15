@@ -1,8 +1,6 @@
-import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import MenuBar from './components/MenuBar';
 import Main from './pages/Main';
-import Header from './components/Header';
 
 function Layout() {
   return (

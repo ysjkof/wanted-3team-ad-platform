@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Advertising, AdvertisingManagement } from '../database/dbTypes';
+import { Advertising, AdvertisingManagement } from '../databaseTypes';
 import advertisingManagementServices from '../api/advertisingManagementServices';
 
 export interface MutationAdvertisingInpus
-  extends Pick<Advertising, 'adType' | 'title' | 'budget' | 'startDate' | 'endDate'> {}
+  extends Pick<Advertising, 'adType' | 'title' | 'budget' | 'startDate' | 'endDate' | 'status'> {}
 
 function useAdvertisingManagementQuery() {
   const [managementState, setMenagementState] = useState<AdvertisingManagement>();

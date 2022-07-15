@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
-import { END_POINT_ADVERTISING_MANAGEMENT } from '../constants/constants';
-import { MutationAdvertisingInpus } from '../hook/useAdvertisingManagementQuery';
+import { END_POINT_ADVERTISING_MANAGEMENT } from '../../constants/constants';
+import { MutationAdvertisingInpus } from '../../hook/useAdvertisingManagementQuery';
 
 export interface QueryOptions {
   property: string;
