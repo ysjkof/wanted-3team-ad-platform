@@ -9,15 +9,13 @@ export default function Test() {
     loading: mediaLoading,
     mediaReports,
     dateOfData: mediaDateOfData,
-    queryMediaReports,
+    getMediaReports,
   } = useMediaQuery({
-    property: 'date',
     gte: new Date('2022-02-04'),
     lte: new Date('2022-02-05'),
   });
 
-  const { loading, integrationReports, dateOfData, queryIntegrationStatus } = useIntegrationStatusQuery({
-    property: 'date',
+  const { loading, integrationReports, dateOfData, getIntegrationStatus } = useIntegrationStatusQuery({
     gte: new Date('2022-02-04'),
     lte: new Date('2022-02-05'),
   });
@@ -25,7 +23,7 @@ export default function Test() {
   const { managementState, createAdvertising, modifyAdversising, deleteAdversising } = useAdvertisingManagementQuery();
 
   const invokeTestBtn = async () => {
-    // queryMediaReports({ property: 'date', gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
+    // getMediaReports({ property: 'date', gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
     modifyAdversising({
       id: 5,
       adType: 'web',
@@ -52,14 +50,26 @@ export default function Test() {
 
   return (
     <Container>
-      <button onClick={invokeTestBtn}>테스트 버튼</button>
-      <button onClick={invokeCreateAdvertising}>테스트 광고 생성</button>
-      {mediaLoading ? 'loading' : mediaReports?.map((report, idx) => <p key={idx}>{report.date}</p>)}
+      <div>
+        <button onClick={invokeTestBtn}>테스트 버튼</button>
+        <button onClick={invokeCreateAdvertising}>테스트 광고 생성</button>
+      </div>
+      {mediaLoading
+        ? 'loading'
+        : mediaReports?.map((report, idx) => (
+            <p key={idx}>
+              날짜 : {report.date}
+              <br />
+              ROAS : {report.roas}
+            </p>
+          ))}
     </Container>
   );
 }
 
 const Container = styled.div`
-  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   background-color: ${theme.mainBackgroundColor};
 `;

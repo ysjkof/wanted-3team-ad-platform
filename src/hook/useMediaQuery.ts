@@ -14,7 +14,7 @@ function useMediaQuery(queryOptions: QueryOptions) {
     setDateOfData(data.map((dailyReport) => new Date(dailyReport.date)));
   };
 
-  const queryMediaReports = async (queryOptions: QueryOptions) => {
+  const getMediaReports = async (queryOptions: QueryOptions) => {
     setLoading(true);
 
     setMediaReports(await mediaService.getBetween(queryOptions));
@@ -22,11 +22,11 @@ function useMediaQuery(queryOptions: QueryOptions) {
   };
 
   useEffect(() => {
-    queryMediaReports(queryOptions);
     getDateWhenDataIsPresent();
+    getMediaReports(queryOptions);
   }, []);
 
-  return { loading, mediaReports, dateOfData, queryMediaReports };
+  return { loading, mediaReports, dateOfData, getMediaReports };
 }
 
 export default useMediaQuery;

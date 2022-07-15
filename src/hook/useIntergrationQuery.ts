@@ -14,19 +14,18 @@ function useIntegrationStatusQuery(queryOptions: QueryOptions) {
     setDateOfData(data.report.daily.map((dailyReport) => new Date(dailyReport.date)));
   };
 
-  const queryIntegrationStatus = async (queryOptions: QueryOptions) => {
+  const getIntegrationStatus = async (queryOptions: QueryOptions) => {
     setLoading(true);
-
     setIntegrationReports(await integrationStatusServices.getBetween(queryOptions));
     setLoading(false);
   };
 
   useEffect(() => {
-    queryIntegrationStatus(queryOptions);
     getDateWhenDataIsPresent();
+    getIntegrationStatus(queryOptions);
   }, []);
 
-  return { loading, integrationReports, dateOfData, queryIntegrationStatus };
+  return { loading, integrationReports, dateOfData, getIntegrationStatus };
 }
 
 export default useIntegrationStatusQuery;

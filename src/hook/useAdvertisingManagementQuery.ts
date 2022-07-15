@@ -13,9 +13,8 @@ function useAdvertisingManagementQuery() {
   const [managementState, setMenagementState] = useState<AdvertisingManagement>();
   const [loading, setLoading] = useState(true);
 
-  const queryManagementState = async () => {
+  const getManagementState = async () => {
     setLoading(true);
-
     setMenagementState(await advertisingManagementServices.getAll());
     setLoading(false);
   };
@@ -40,7 +39,7 @@ function useAdvertisingManagementQuery() {
   };
 
   useEffect(() => {
-    queryManagementState();
+    getManagementState();
   }, []);
 
   return { loading, managementState, createAdvertising, modifyAdversising, deleteAdversising };
