@@ -8,23 +8,30 @@ export default function Test() {
   const {
     loading: mediaLoading,
     mediaReports,
-    queryMediaReports,
+    dateOfData: mediaDateOfData,
+    getMediaReports,
   } = useMediaQuery({
-    property: 'date',
     gte: new Date('2022-02-04'),
     lte: new Date('2022-02-05'),
   });
 
-  const { loading, integrationReports, queryIntegrationStatus } = useIntegrationStatusQuery({
-    property: 'date',
+  const { loading, integrationReports, dateOfData, getIntegrationStatus } = useIntegrationStatusQuery({
     gte: new Date('2022-02-04'),
     lte: new Date('2022-02-05'),
   });
 
-  const { managementState, createAdvertising } = useAdvertisingManagementQuery();
+  const { managementState, createAdvertising, modifyAdversising, deleteAdversising } = useAdvertisingManagementQuery();
 
-  const onClick = async () => {
-    queryMediaReports({ property: 'date', gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
+  const invokeTestBtn = async () => {
+    // getMediaReports({ property: 'date', gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
+    modifyAdversising({
+      id: 5,
+      adType: 'web',
+      // budget: 500,
+      // title: '테스트 광고 수정',
+      status: 'active',
+    });
+    // deleteAdversising(5);
   };
 
   const invokeCreateAdvertising = () => {
@@ -33,22 +40,36 @@ export default function Test() {
       budget: 121809324,
       startDate: new Date(),
       title: '테스트 광고 생성',
+      status: 'active',
     });
   };
 
   // console.log('integrationReports', integrationReports?.report.daily);
   // console.log('mediaReports', mediaReports);
   // console.log('managementState', managementState);
+
   return (
     <Container>
-      <button onClick={onClick}>TEST BTN</button>
-      <button onClick={invokeCreateAdvertising}>TEST 광고 생성</button>
-      {mediaLoading ? 'loading' : mediaReports?.map((report) => <p>{report.date}</p>)}
+      <div>
+        <button onClick={invokeTestBtn}>테스트 버튼</button>
+        <button onClick={invokeCreateAdvertising}>테스트 광고 생성</button>
+      </div>
+      {mediaLoading
+        ? 'loading'
+        : mediaReports?.map((report, idx) => (
+            <p key={idx}>
+              날짜 : {report.date}
+              <br />
+              ROAS : {report.roas}
+            </p>
+          ))}
     </Container>
   );
 }
 
 const Container = styled.div`
-  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   background-color: ${theme.mainBackgroundColor};
 `;
