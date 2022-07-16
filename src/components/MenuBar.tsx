@@ -26,7 +26,7 @@ export default function MenuBar() {
   }, [selectedTab]);
 
   return (
-    <Container>
+    <Container className="MenuBar">
       <MenuButton
         selected={selectedTab === TABS.DASHBOARD}
         className="dashboard_tab"
@@ -51,12 +51,19 @@ export default function MenuBar() {
   );
 }
 const Container = styled.div`
-  width: 20%;
+  width: 12.8rem;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: calc((100% - 64rem) / 2);
   border: rgb(246, 248, 248) solid 1px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media (max-width: 1024px) {
+    left: 0;
+  }
 `;
 
 const MenuButton = styled.button<Props>`
