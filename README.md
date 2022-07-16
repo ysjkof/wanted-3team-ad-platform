@@ -1,6 +1,6 @@
 # wanted-3team-ad-platform
 
-## Commit convention
+## 커밋 규칙
 
 | 종류     | 설명                                         |
 | -------- | -------------------------------------------- |
@@ -18,47 +18,103 @@
 ## 계획
 
 - **대시보드**
+
   ![ad platform 기획 001](https://user-images.githubusercontent.com/77876601/178675841-b05b49d6-6f5f-488c-8aa8-a97f831d7282.jpeg)
 
 - **광고관리**
+
   ![ad platform 기획 003](https://user-images.githubusercontent.com/77876601/178675860-26c007c9-9d05-44bc-8296-f880b6664f22.jpeg)
 
 - **모바일 드롭다운 메뉴**
+
   ![ad platform 기획 002](https://user-images.githubusercontent.com/77876601/178675856-43045e16-b9ba-40a9-bf61-bce15cff82a6.jpeg)
 
-## Custom hook documents: for data fetch
+## 커스텀 훅 문서(데이터 불러오기)
 
-### `useMediaQuery` : 매체 현황을 요청한다
+### useMediaQuery
 
-훅을 실행하면 `{ loading, mediaReports, queryMediaReports }` 3개 값을 가진 객체를 반환한다.
+**매체 현황**과 관련된 기능
 
-- 훅이 데이터를 불러오는 동안 `loading`이 `boolean` 값을 갖는다.
-- `mediaReports`은 **매체 현황** 값을 갖는다.
-- `queryMediaReports`에 `queryOption`을 주고 실행하면 option에 따라 **새로운 값을 요청**한다.
+- 훅을 실행하면 `{ loading, mediaReports, dateOfData, getMediaReports }` 3개 값을 가진 객체를 반환한다.
 
-### `useIntegrationStatusQuery` : 통합 광고 현황을 요청한다
+- import할 때 매개변수로 queryOption을 받고 그 날짜로 초기 값을 불러온다.
 
-훅을 실행하면 `{ loading, integrationReports, queryIntegrationStatus }` 3개 값을 가진 객체를 반환한다.
+- loading은 훅이 데이터를 불러오는 동안 `boolean`으로 반환한다.
 
-- `integrationReports`은 **매체 현황** 값을 갖는다.
-- `queryIntegrationStatus`에 `queryOption`을 주고 실행하면 option에 따라 **새로운 값을 요청**한다.
+- mediaReports은 **매체 현황** 값을 갖는다.
 
-### `useAdvertisingManagementQuery` : 광과관리를 요청한다
-
-훅을 실행하면 `{ loading, managementState, createAdvertising }` 2개 값을 가진 객체를 반환한다.
-
-- `managementState`은 **매체 현황** 값을 갖는다.
-- `createAdvertising`은 광고를 만든다.
-  - 필수 입력 값 `adType`, `title`, `budget`, `startDate`
-  - 선택 입력 값 `endDate`
+- getMediaReports은 queryOption을 주고 실행하면 option에 맞는 **새로운 값을 요청**한다.
 
 ```ts
-// 광고 새로 만드는 방법
-const { createAdvertising } = useAdvertisingManagementQuery();
+interface QueryOption {
+  gte: Date;
+  lte: Date;
+}
+```
+
+### useIntegrationStatusQuery
+
+**통합 광고 현황**과 관련된 기능
+
+- 훅을 실행하면 `{ loading, integrationReports, dateOfData, getIntegrationStatus }` 3개 값을 가진 객체를 반환한다.
+
+- import할 때 매개변수로 queryOption을 받고 그 날짜로 초기 값을 불러온다.
+
+- integrationReports은 **광고 현황** 값을 갖는다.
+
+- getIntegrationStatus은 queryOption을 주고 실행하면 option에 맞는 **새로운 값을 요청**한다.
+
+### useAdvertisingManagementQuery
+
+**광고관리**와 관련된 기능
+
+훅을 실행하면 `{ loading, managementState, createAdvertising, modifyAdversising, deleteAdversising }` 5개 값을 가진 객체를 반환한다.
+
+- managementState
+
+  광고 상태 값을 갖는다.
+
+- createAdvertising
+
+  | 조건 | 매개변수                                 |
+  | ---- | ---------------------------------------- |
+  | 필수 | adType, title, budget, startDate, status |
+  | 선택 | endDate                                  |
+
+- modifyAdversising
+
+  | 조건 | 매개변수                                         |
+  | ---- | ------------------------------------------------ |
+  | 필수 | id                                               |
+  | 선택 | adType, title, budget, startDate, status,endDate |
+
+- deleteAdversising
+
+  | 조건 | 매개변수 |
+  | ---- | -------- |
+  | 필수 | id       |
+
+- 사용 예시
+
+```ts
+// 광고 만들기
+const { createAdvertising, modifyAdversising, deleteAdversising } = useAdvertisingManagementQuery();
 createAdvertising({
   adType: 'web',
   budget: 2384710982,
   startDate: new Date('2022-07-01'),
   title: '테스트 광고 생성',
+  status: 'active',
 });
+
+// 광고 수정
+modifyAdversising({
+  id: 5, // id값은 필수 입력
+  budget: 500,
+  title: '테스트 광고 수정',
+  status: 'ended',
+});
+
+// 광고 삭제
+deleteAdversising(5);
 ```

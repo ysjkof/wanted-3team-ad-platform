@@ -1,24 +1,31 @@
 import { useEffect, useState } from 'react';
-import { IntegrationStatus } from '../database/dbTypes';
-import { QueryOptions } from '../api/httpRequest';
+import { IntegrationStatus } from '../databaseTypes';
+import { QueryOptions } from '../api/common/httpRequest';
 import integrationStatusServices from '../api/integrationStatusServices';
 
 function useIntegrationStatusQuery(queryOptions: QueryOptions) {
   const [integrationReports, setIntegrationReports] = useState<IntegrationStatus>();
+  const [dateOfData, setDateOfData] = useState<Date[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const queryIntegrationStatus = async (queryOptions: QueryOptions) => {
-    setLoading(true);
+  const getDateWhenDataIsPresent = async () => {
+    const data = await integrationStatusServices.getAll();
 
+    setDateOfData(data.report.daily.map((dailyReport) => new Date(dailyReport.date)));
+  };
+
+  const getIntegrationStatus = async (queryOptions: QueryOptions) => {
+    setLoading(true);
     setIntegrationReports(await integrationStatusServices.getBetween(queryOptions));
     setLoading(false);
   };
 
   useEffect(() => {
-    queryIntegrationStatus(queryOptions);
+    getDateWhenDataIsPresent();
+    getIntegrationStatus(queryOptions);
   }, []);
 
-  return { loading, integrationReports, queryIntegrationStatus };
+  return { loading, integrationReports, dateOfData, getIntegrationStatus };
 }
 
 export default useIntegrationStatusQuery;
