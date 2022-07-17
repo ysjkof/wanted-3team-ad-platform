@@ -22,4 +22,7 @@ const Container = styled.div`
   * {
     box-sizing: border-box;
   }
+  @media (max-width: 480px) {
+    width: 100vw;
+  }
 `;

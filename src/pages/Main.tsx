@@ -7,7 +7,9 @@ export default function Main() {
   return (
     <Container>
       <Header />
-      <Outlet />
+      <Content className="content">
+        <Outlet />
+      </Content>
     </Container>
   );
 }
@@ -15,4 +17,15 @@ export default function Main() {
 const Container = styled.div`
   width: 80%;
   background-color: ${theme.mainBackgroundColor};
+  @media (max-width: 480px) {
+    width: 100%;
+  }
+`;
+
+const Content = styled.div`
+  @media (max-width: 480px) {
+    position: relative;
+    top: 15vw;
+    z-index: 0;
+  }
 `;
