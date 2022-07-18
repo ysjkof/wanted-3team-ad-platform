@@ -106,6 +106,8 @@ createAdvertising({
   title: '테스트 광고 생성',
   status: 'active',
 });
+<<<<<<< HEAD
+=======
 
 // 광고 수정
 modifyAdversising({
@@ -117,4 +119,5 @@ modifyAdversising({
 
 // 광고 삭제
 deleteAdversising(5);
+>>>>>>> fd09a49aec1f35936c804fffdfca1ba26d64b7a8
 ```
