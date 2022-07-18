@@ -14,7 +14,7 @@ import {
 } from 'recharts';
 import { useState } from 'react';
 import MediaTable from './MediaTable';
-import { DailyMediaReport } from '../interfaces/database';
+import { DailyMediaStatus } from '../interfaces/database';
 // import CustomToolTip from "./ToolTip";
 
 interface I_customToolTip {
@@ -41,7 +41,7 @@ export default function MediaStatus() {
   const beforeDate = '2022-02-01';
   const afterDate = '2022-02-07';
   const [tooltip, setToolTip] = useState<I_customToolTip>();
-  const mediaReduce = (arrData: DailyMediaReport[], before: string, after: string) => {
+  const mediaReduce = (arrData: DailyMediaStatus[], before: string, after: string) => {
     const startMonth = Number(before.split('-')[1]);
     const startDate = Number(before.split('-')[2]);
     const endDate = Number(after.split('-')[2]);

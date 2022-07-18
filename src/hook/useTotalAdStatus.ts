@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
-import { TotalAdStatus } from '../interfaces/database';
-import { QueryOptions } from '../api/common/httpRequest';
-import totalAdStatusServices from '../api/totalAdStatusServices';
+import { QueryOptions } from '../api/httpRequest';
+import { DailyAdStatus } from '../interfaces/database';
+import totalAdStatusModel from '../models/totalAdStatusModel';
 
 function useTotalAdStatus(queryOptions: QueryOptions) {
-  const [totalAdStatus, setTotalAdStatus] = useState<TotalAdStatus>();
+  const [totalAdStatus, setTotalAdStatus] = useState<DailyAdStatus[]>();
   const [loading, setLoading] = useState(true);
 
   const getTotalAdStatus = async (queryOptions: QueryOptions) => {
     setLoading(true);
-    setTotalAdStatus(await totalAdStatusServices.getBetween(queryOptions));
+    setTotalAdStatus((await totalAdStatusModel.getPeriod(queryOptions)) || []);
     setLoading(false);
   };
 

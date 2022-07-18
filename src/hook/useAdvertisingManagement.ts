@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Advertising, AdvertisingManagement } from '../interfaces/database';
-import advertisingManagementServices from '../api/advertisingManagementServices';
+import advertisingManagementModel from '../models/advertisingManagementModel';
 
 export interface CreateAdvertisingInpus
   extends Pick<Advertising, 'adType' | 'title' | 'budget' | 'startDate' | 'endDate' | 'status'> {}
@@ -9,32 +9,32 @@ export interface ModifyAdvertisingInpus extends Partial<CreateAdvertisingInpus> 
   id: number;
 }
 
-function useAdvertisingManagementQuery() {
-  const [managementState, setMenagementState] = useState<AdvertisingManagement>();
+function useAdvertisingManagement() {
+  const [managementState, setMenagementState] = useState<AdvertisingManagement | null>(null);
   const [loading, setLoading] = useState(true);
 
   const getManagementState = async () => {
     setLoading(true);
-    setMenagementState(await advertisingManagementServices.getAll());
+    setMenagementState((await advertisingManagementModel.getOne()) || null);
     setLoading(false);
   };
 
   const createAdvertising = async (mutationAdvertisingInpus: CreateAdvertisingInpus) => {
     setLoading(true);
-    const result = await advertisingManagementServices.createAdvertising(mutationAdvertisingInpus);
+    const result = await advertisingManagementModel.createAdvertising(mutationAdvertisingInpus);
     setLoading(false);
     return result;
   };
 
   const modifyAdversising = async (mutationAdvertisingInpus: ModifyAdvertisingInpus) => {
     setLoading(true);
-    await advertisingManagementServices.modifyAdvertising(mutationAdvertisingInpus);
+    await advertisingManagementModel.modifyAdvertising(mutationAdvertisingInpus);
     setLoading(false);
   };
 
   const deleteAdversising = async (id: number) => {
     setLoading(true);
-    await advertisingManagementServices.deleteAdvertising(id);
+    await advertisingManagementModel.deleteAdvertising(id);
     setLoading(false);
   };
 
@@ -45,4 +45,4 @@ function useAdvertisingManagementQuery() {
   return { loading, managementState, createAdvertising, modifyAdversising, deleteAdversising };
 }
 
-export default useAdvertisingManagementQuery;
+export default useAdvertisingManagement;

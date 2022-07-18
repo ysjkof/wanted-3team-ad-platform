@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
-import { theme } from '../theme';
+import styled from 'styled-components';
+import { theme } from '../styles/theme';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { HiOutlinePresentationChartBar } from 'react-icons/hi';
 import { MdAddchart } from 'react-icons/md';
