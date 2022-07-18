@@ -52,17 +52,17 @@ interface QueryOption {
 }
 ```
 
-### useIntegrationStatusQuery
+### useTotalAdStatus
 
 **통합 광고 현황**과 관련된 기능
 
-- 훅을 실행하면 `{ loading, integrationReports, dateOfData, getIntegrationStatus }` 3개 값을 가진 객체를 반환한다.
+- 훅을 실행하면 `{ loading, totalAdStatus, getTotalAdStatus }` 3개 값을 가진 객체를 반환한다.
 
 - import할 때 매개변수로 queryOption을 받고 그 날짜로 초기 값을 불러온다.
 
-- integrationReports은 **광고 현황** 값을 갖는다.
+- totalAdStatus은 **광고 현황** 값을 갖는다.
 
-- getIntegrationStatus은 queryOption을 주고 실행하면 option에 맞는 **새로운 값을 요청**한다.
+- getTotalAdStatus은 queryOption을 주고 실행하면 option에 맞는 **새로운 값을 요청**한다.
 
 ### useAdvertisingManagementQuery
 

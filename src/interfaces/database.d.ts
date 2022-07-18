@@ -1,7 +1,7 @@
-export interface IntegrationStatus {
-  report: { daily: DailyIntegrationReport[] };
+export interface TotalAdStatus {
+  report: { daily: DailyTotalAdStatus[] };
 }
-export interface DailyIntegrationReport {
+export interface DailyTotalAdStatus {
   imp: number;
   click: number;
   cost: number;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import useAdvertisingManagementQuery from '../hook/useAdvertisingManagementQuery';
-import useIntegrationStatusQuery from '../hook/useIntergrationQuery';
+import useTotalAdStatus from '../hook/useIntergrationQuery';
 import useMediaQuery from '../hook/useMediaQuery';
 import { theme } from '../theme';
 
@@ -8,14 +8,13 @@ export default function Test() {
   const {
     loading: mediaLoading,
     mediaReports,
-    dateOfData: mediaDateOfData,
     getMediaReports,
   } = useMediaQuery({
     gte: new Date('2022-02-04'),
     lte: new Date('2022-02-05'),
   });
 
-  const { loading, integrationReports, dateOfData, getIntegrationStatus } = useIntegrationStatusQuery({
+  const { loading, totalAdStatus, getTotalAdStatus } = useTotalAdStatus({
     gte: new Date('2022-02-04'),
     lte: new Date('2022-02-05'),
   });
@@ -23,14 +22,14 @@ export default function Test() {
   const { managementState, createAdvertising, modifyAdversising, deleteAdversising } = useAdvertisingManagementQuery();
 
   const invokeTestBtn = async () => {
-    // getMediaReports({ property: 'date', gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
-    modifyAdversising({
-      id: 5,
-      adType: 'web',
-      // budget: 500,
-      // title: '테스트 광고 수정',
-      status: 'active',
-    });
+    getMediaReports({ gte: new Date('2022-02-06'), lte: new Date('2022-02-07') });
+    // modifyAdversising({
+    //   id: 5,
+    //   adType: 'web',
+    //   // budget: 500,
+    //   // title: '테스트 광고 수정',
+    //   status: 'active',
+    // });
     // deleteAdversising(5);
   };
 
@@ -43,10 +42,6 @@ export default function Test() {
       status: 'active',
     });
   };
-
-  // console.log('integrationReports', integrationReports?.report.daily);
-  // console.log('mediaReports', mediaReports);
-  // console.log('managementState', managementState);
 
   return (
     <Container>

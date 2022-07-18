@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Advertising, AdvertisingManagement } from '../databaseTypes';
+import { Advertising, AdvertisingManagement } from '../interfaces/database';
 import advertisingManagementServices from '../api/advertisingManagementServices';
 
 export interface CreateAdvertisingInpus
