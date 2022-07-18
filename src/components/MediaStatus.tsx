@@ -2,21 +2,10 @@ import styled from "styled-components"
 import {media} from './mediaDataExample'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
 import { useState } from "react";
+import { DailyMediaReport } from "../database/dbTypes";
+import MediaTable from "./MediaTable";
 // import CustomToolTip from "./ToolTip";
 
-interface I_MediaData {
-  channel: String, // 채널
-  date: String, // 날짜
-  imp: Number, // 노출횟수
-  click: Number, // 클릭수
-  cost: Number, // 광고비용 / 비용
-  convValue: Number,
-  ctr: Number, // 광고 노출 대비 클릭 수
-  cvr: Number, // 전환 / 구매 전환율
-  cpc: Number, // 클릭당 비용
-  cpa: Number, // 가입까지 든 비용
-  roas: Number // 매출 / 광고수익
-}
 interface I_customToolTip {
   show:boolean,
   position:{
@@ -42,7 +31,7 @@ export default function MediaStatus(){
   const beforeDate = "2022-02-01";
   const afterDate = "2022-02-07"
     const [tooltip, setToolTip] = useState<I_customToolTip>();
-  const mediaReduce = (arrData:I_MediaData[],before:string,after:string) => {
+  const mediaReduce = (arrData:DailyMediaReport[],before:string,after:string) => {
     const startMonth = Number(before.split("-")[1]);
     const startDate = Number(before.split("-")[2]);
     const endDate = Number(after.split("-")[2]);
@@ -192,27 +181,29 @@ const CustomToolTip = ({ active, payload, label }) => {
   
 }
   return (
-  <>
-  <Chart>
-    <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          width={500}
-          height={300}
-          stackOffset="expand"
-          data={mediaData}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-          barSize={30}
-        >
+  <Container>
+    <div>매체 현황</div>
+    <Wrap>
+      <Chart>
+      <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            width={500}
+            height={300}
+            stackOffset="expand"
+            data={mediaData}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+            barSize={30}
+          >
           <Tooltip cursor={false} wrapperStyle={{ top: -150, left: 200 }} content={<CustomToolTip/>} />
-          <CartesianGrid strokeDasharray="6 6" />
-          <XAxis dataKey="name"/>
+          <CartesianGrid  horizontal={true} vertical={false} dx={-200} stroke="#E6E7E8"/>
+          <XAxis dataKey="name" stroke="#E6E7E8" tick={{dy:10,fontSize:"12px" , stroke:"#c5cace" , fontWeight:"0"}}  tickLine={false} />
           {/* <YAxis domain={domain} tick={{ticks}} /> */}
-          <YAxis  axisLine={true} tickCount={6} tickFormatter={toPercent} />
+          <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
           {barKeys[0].map((key:any)=>{
             const bars = [];
             bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]}  radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} />)
@@ -243,18 +234,31 @@ const CustomToolTip = ({ active, payload, label }) => {
           <Bar dataKey="naver" stackId="aStack" fill="#85DA47" shape={BarWithBorder(1, "#ffffff")} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
           <Bar dataKey="facebook" stackId="aStack" fill="#4FADF7" radius={[5,5,0,0]} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/> */}
           
-        </BarChart>
-      </ResponsiveContainer>
-          
-  </Chart>
-  {/* {tooltip?.show && (
-            <CustomToolTip {...tooltip} />
-          )} */}
-  </>
+            </BarChart>
+          </ResponsiveContainer>
+      </Chart>
+      {/* {tooltip?.show && (
+                <CustomToolTip {...tooltip} />
+              )} */}
+      <MediaTable mediaData={mediaData}/>
+    </Wrap>
+  </Container>
 )
         }
-
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+const Wrap = styled.div`
+  margin: 0 auto;
+  width: 45rem;
+  background-color: white;
+  border-radius: 15px;
+  overflow-x: scroll;
+`;
 const Chart = styled.div`
-  width: 50rem;
+  width: 100%;
   height: 20rem;
+  margin: 0 auto;
+  padding-top:4rem;
 `;
