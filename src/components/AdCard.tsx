@@ -1,39 +1,49 @@
 import styled from 'styled-components';
 import { theme } from '../theme';
 
-import { Ad } from './AdCardList';
+import { Ad } from '../pages/Management';
 
 interface Props {
   Content: Ad;
 }
 
 export default function AdCard({ Content }: Props) {
+  const statusType = {
+    active: '진행중',
+    ended: '종료',
+  };
+
+  const startDate = Content.startDate.split('T')[0];
+
+  const numberWithCommas = (number: number) => {
+    return number.toLocaleString();
+  };
   return (
     <Container>
       <Title>{Content.title}</Title>
       <Information>
-        <InformationTitle>상태 : </InformationTitle>
-        {Content.status}
+        <InformationTitle>상태 </InformationTitle>
+        {statusType[Content.status]}
       </Information>
       <Information>
-        <InformationTitle>광고 생성일 : </InformationTitle>
-        {Content.startDate}
+        <InformationTitle>광고 생성일 </InformationTitle>
+        {startDate}
       </Information>
       <Information>
-        <InformationTitle>일 희망 예산 : </InformationTitle>
-        {Content.budget}
+        <InformationTitle>일 희망 예산 </InformationTitle>
+        {numberWithCommas(Content.budget)}원
       </Information>
       <Information>
-        <InformationTitle>광고 수익율 : </InformationTitle>
-        {Content.report.roas}
+        <InformationTitle>광고 수익율 </InformationTitle>
+        {Content.report.roas}%
       </Information>
       <Information>
-        <InformationTitle>매출 : </InformationTitle>
-        {Content.report.convValue}
+        <InformationTitle>매출 </InformationTitle>
+        {numberWithCommas(Content.report.convValue)}원
       </Information>
       <Information>
-        <InformationTitle>광고 비용 : </InformationTitle>
-        {Content.report.cost}
+        <InformationTitle>광고 비용 </InformationTitle>
+        {numberWithCommas(Content.report.cost)}원
       </Information>
       <EditButton>수정하기</EditButton>
     </Container>

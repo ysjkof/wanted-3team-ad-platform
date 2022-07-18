@@ -177,8 +177,6 @@ const CustomToolTip = ({ active, payload, label }) => {
   console.log("액티브",active);
   console.log("페이로드",payload);
   console.log("라벨",label);
-  
-  
 }
   return (
   <Container>
@@ -261,4 +259,5 @@ const Chart = styled.div`
   height: 20rem;
   margin: 0 auto;
   padding-top:4rem;
+
 `;

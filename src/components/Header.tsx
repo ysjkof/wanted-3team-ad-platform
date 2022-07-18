@@ -15,7 +15,10 @@ export default function Header() {
 }
 
 const Container = styled.nav`
+  position: sticky;
+  top: 0;
   box-sizing: border-box;
+  z-index: 5;
   width: 100%;
   height: 3rem;
   padding-right: 1rem;
@@ -23,7 +26,14 @@ const Container = styled.nav`
   display: flex;
   justify-content: right;
   align-items: center;
+  background-color: inherit;
   * {
     margin-left: 1rem;
+  }
+  @media (max-width: 480px) {
+    position: fixed;
+    top: 0;
+    height: 15vw;
+    border-bottom: none;
   }
 `;
