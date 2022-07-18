@@ -1,6 +1,5 @@
-export interface IntegrationStatus {
-  report: { daily: DailyIntegrationReport[] };
-}
+export type IntegrationStatus = DailyIntegrationReport[];
+
 export interface DailyIntegrationReport {
   imp: number;
   click: number;
