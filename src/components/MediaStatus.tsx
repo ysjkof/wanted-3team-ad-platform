@@ -2,28 +2,10 @@ import styled from "styled-components"
 import {media} from './mediaDataExample'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
 import { useState } from "react";
+import { DailyMediaReport } from "../database/dbTypes";
+import MediaTable from "./MediaTable";
 // import CustomToolTip from "./ToolTip";
 
-interface I_MediaData {
-  channel: String, // 채널
-  date: String, // 날짜
-  imp: Number, // 노출횟수
-  click: Number, // 클릭수
-  cost: Number, // 광고비용 / 비용
-  convValue: Number,
-  ctr: Number, // 광고 노출 대비 클릭 수
-  cvr: Number, // 전환 / 구매 전환율
-  cpc: Number, // 클릭당 비용
-  cpa: Number, // 가입까지 든 비용
-  roas: Number // 매출 / 광고수익
-}
-interface I_reduceData {
-  click:Number,
-  cost:Number,
-  cvr:Number,
-  imp:Number,
-  roas:Number,
-}
 interface I_customToolTip {
   show:boolean,
   position:{
@@ -32,89 +14,103 @@ interface I_customToolTip {
   },
   content:any
 }
+const channelId = {
+  // date: 0,
+  cost: 0,
+  roas: 1,
+  imp: 2,
+  click: 3,
+  cvr: 4,
+  convValue: 5,
+  ctr: 6,
+  cpc: 7,
+  cpa: 8,
+ 
+}
 export default function MediaStatus(){
   const beforeDate = "2022-02-01";
   const afterDate = "2022-02-07"
     const [tooltip, setToolTip] = useState<I_customToolTip>();
-  
-  const mediaReduce = (arrData:I_MediaData[],before:string,after:string) => {
+  const mediaReduce = (arrData:DailyMediaReport[],before:string,after:string) => {
     const startMonth = Number(before.split("-")[1]);
     const startDate = Number(before.split("-")[2]);
     const endDate = Number(after.split("-")[2]);
     let count = Number(startDate);
-    let channelCount:number = 0;
-    let currentChannelName:string;
-      return arrData?.reduce((obj:any,val:any) => {
+    return arrData?.reduce((obj:any,val:any,i:number) => {
         if(Number(val.date.split("-")[1]) === startMonth && Number(val.date.split("-")[2]) === count){
-            obj[channelCount] = {
-              channel: val?.channel,
-              cost: obj[val.channel]?.cost === undefined ? val?.cost : obj[val.channel]?.cost + val.cost,
-              roas: obj[val.channel]?.roas === undefined ? val?.roas : obj[val.channel]?.roas + val.roas,
-              imp: obj[val.channel]?.imp === undefined ? val?.imp : obj[val.channel]?.imp + val.imp,
-              click: obj[val.channel]?.click === undefined ? val?.click : obj[val.channel]?.click + val.click,
-              cvr: obj[val.channel]?.cvr === undefined ? val?.cvr : obj[val.channel]?.cvr + val.cvr,
-            } 
-            if(count !== endDate) count = count + 1;
-            if(currentChannelName !== val.channel){
-              currentChannelName = val.channel
-              channelCount++;
+            obj[channelId.cost] = {
+              cost:{
+                [val.channel]:val.cost,
+                ...obj[channelId.cost]?.cost,
+              },
+              name:"광고비",
+              total: obj[channelId.cost] === undefined ? val.cost : obj[channelId.cost].total + val.cost,
+            },
+            obj[channelId.roas] = {
+              roas:{
+                [val.channel]:val.roas,
+                ...obj[channelId.roas]?.roas,
+              },
+              name:"매출",
+              total: obj[channelId.roas] === undefined ? val.roas : obj[channelId.roas].total + val.roas,
+            },
+            obj[channelId.imp] = {
+              imp:{
+                [val.channel]:val.imp,
+                ...obj[channelId.imp]?.imp,
+              },
+              name:"노출수",
+              total: obj[channelId.imp] === undefined ? val.imp : obj[channelId.imp].total + val.imp,
+            },
+            obj[channelId.click] = {
+              click:{
+                [val.channel]:val.click,
+                ...obj[channelId.click]?.click,
+              },
+              name:"클릭 수",
+              total: obj[channelId.click] === undefined ? val.click : obj[channelId.click].total + val.click,
+            },
+            obj[channelId.cvr] = {
+              cvr:{
+                [val.channel]:val.cvr,
+                ...obj[channelId.cvr]?.cvr,
+              },
+              name:"전환수",
+              total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
             }
+            if(count !== endDate) count = count + 1;
           }
           return obj
-      },[])
-   }
-   
-  const mediaData = mediaReduce(media,beforeDate,afterDate);
-  interface I_reduceChart {
-    channel:string,
-    click:number,
-    roas:number,
-    cvr:number,
-    imp:number,
-    cost:number,
+    },[])
   }
-  const chartReduce = mediaData.reduce((obj:any,val:I_reduceChart,i:number)=>{
-      console.log(obj[0]?.total , val.cost , obj[0]?.total === undefined ),
-    
-      obj[0] = {
-        element:"cost",
-        [val.channel]: val.cost ,
-        ...obj[0],
-        total: obj[0]?.total === undefined ? val.cost : obj[0]?.total + val.cost,
-      },
-      
-      obj[1] = {
-        element:"roas",
-        [val.channel]: val.roas ,
-        ...obj[1],
-        total: obj[1]?.total === undefined ? val.roas : obj[1]?.total+val.roas,
-      },
-      obj[2] = {
-        element:"imp",
-        [val.channel]: val.imp ,
-        ...obj[2],
-        total: obj[2]?.total === undefined ? val.imp : obj[2]?.total+val.imp,
-      },
-      obj[3] = {
-        element:"click",
-        [val.channel]: val.click ,
-        ...obj[3],
-        total: obj[3]?.total === undefined ? val.click : obj[3]?.total+val.click,
-      },
-      obj[4] = {
-        element:"cvr",
-        [val.channel]: val.cvr ,
-        ...obj[4],
-        total: obj[4]?.total === undefined ? val.cvr : obj[4]?.total+val.cvr,
-      }
-    
-    return obj
-   },[]);
-  const chartData = chartReduce;
-  const domain = [0,100]
-  // const domain = ["0","100"]
-  // const ticks = ["20" , "40" , "60", "80","100"] 
-  const ticks = [20,40,60,80,100] 
+  const mediaData = mediaReduce(media,beforeDate,afterDate)
+  const toPercent = (tick:number) => {
+    const ticks:string[] = [];
+    if(tick !== 0){
+      ticks.push(`${tick * 100}%`)
+    } 
+    return ticks;
+  }
+  console.log("데이터",mediaData);
+
+  const barKeys = [['cost.kakao', 'cost.google', 'cost.naver', 'cost.facebook'],
+    ['imp.kakao', 'imp.google', 'imp.naver', 'imp.facebook'],
+    ['click.kakao', 'click.google', 'click.naver', 'click.facebook'],
+    ['roas.kakao', 'roas.google', 'roas.naver', 'roas.facebook'],
+    ['cvr.kakao', 'cvr.google', 'cvr.naver', 'cvr.facebook']
+  ];
+  interface I_barColors {
+    kakao: string,
+    google: string,
+    naver: string,
+    facebook :string
+  }
+  const barColors:I_barColors = {
+    kakao: "#f9E000",
+    google: "#AC8AF8",
+    naver: "#85DA47",
+    facebook :"#4FADF7"
+  }
   const BarWithBorder = (borderHeight: number, borderColor: string) => {
   return (props: any) => {
     const { fill, x, y, width, height } = props;
@@ -150,15 +146,13 @@ const Content = ({name , value}:any) => {
   )
 }
 const showTooltip = (data:any , i:any , event:any) => {
-  const value = data[data.tooltipPayload[0].dataKey]
-  setToolTip({
-    show:true,
-    position: {x:event.clientX,y:event.clientY},
-    content: <Content name={data.tooltipPayload[0].dataKey} value={value} />
-  })
-  
+  // const value = data[data.tooltipPayload[0].dataKey]
+  // setToolTip({
+  //   show:true,
+  //   position: {x:event.clientX,y:event.clientY},
+  //   content: <Content name={data.tooltipPayload[0].dataKey} value={value} />
+  // })
 }
-
 const leaveTooltip = () => {
     setToolTip({
     show:false,
@@ -167,52 +161,104 @@ const leaveTooltip = () => {
   })
 }
 type T_Position = {x:number,y:number}
-const CustomToolTip = ({position,content}:any) => {
-  const {x,y} = position || {};
-  return(
-    <div
-    style={{ left:x+5 , top: y+5 }}
-    >
-      {content}
-    </div>
-  )
+// const CustomToolTip = ({position,content}:any) => {
+//   const {x,y} = position || {};
+//   console.log(position);
+  
+//   return(
+//     <div
+//     style={{ width:"50px",height:"50px",backgroundColor:"blueviolet" }}
+//     >
+//       {content}
+//     </div>
+//   )
+// }
+const CustomToolTip = ({ active, payload, label }) => {
+  console.log("액티브",active);
+  console.log("페이로드",payload);
+  console.log("라벨",label);
+  
+  
 }
   return (
-  <Chart>
-    <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          width={500}
-          height={300}
-          data={chartData}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="element"/>
+  <Container>
+    <div>매체 현황</div>
+    <Wrap>
+      <Chart>
+      <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            width={500}
+            height={300}
+            stackOffset="expand"
+            data={mediaData}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+            barSize={30}
+          >
+          <Tooltip cursor={false} wrapperStyle={{ top: -150, left: 200 }} content={<CustomToolTip/>} />
+          <CartesianGrid  horizontal={true} vertical={false} dx={-200} stroke="#E6E7E8"/>
+          <XAxis dataKey="name" stroke="#E6E7E8" tick={{dy:10,fontSize:"12px" , stroke:"#c5cace" , fontWeight:"0"}}  tickLine={false} />
           {/* <YAxis domain={domain} tick={{ticks}} /> */}
-          <YAxis domain={domain} ticks={ticks} tickFormatter={(ticks) => { return `${ticks}%`}} />
-          <Legend />
-          <Bar dataKey="kakao" stackId="aStack" fill="#f9e000" barSize={40} shape={BarWithBorder(1, "#ffffff")} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
+          <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
+          {barKeys[0].map((key:any)=>{
+            const bars = [];
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]}  radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} />)
+            return bars;
+          })}
+          {barKeys[1].map((key)=>{
+            const bars = [];
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip}/>)
+            return bars;
+          })}
+          {barKeys[2].map((key)=>{
+            const bars = [];
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip}/>)
+            return bars;
+          })}
+          {barKeys[3].map((key)=>{
+            const bars = [];
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip}/>)
+            return bars;
+          })}
+          {barKeys[4].map((key)=>{
+            const bars = [];
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" && [5,5,0,0]} onMouseOver={showTooltip}/>)
+            return bars;
+          })}
+          {/* <Bar dataKey="kakao" stackId="aStack" fill="#f9e000" barSize={40} shape={BarWithBorder(1, "#ffffff")} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
           <Bar dataKey="google" stackId="aStack" fill="#AC8AF8" shape={BarWithBorder(1, "#ffffff")}  onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
           <Bar dataKey="naver" stackId="aStack" fill="#85DA47" shape={BarWithBorder(1, "#ffffff")} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
-          <Bar dataKey="facebook" stackId="aStack" fill="#4FADF7" radius={[5,5,0,0]} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
+          <Bar dataKey="facebook" stackId="aStack" fill="#4FADF7" radius={[5,5,0,0]} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/> */}
           
-        </BarChart>
-      </ResponsiveContainer>
-          {tooltip?.show && (
-    <CustomToolTip {...tooltip} />
-  )}
-  
-
-  </Chart>
+            </BarChart>
+          </ResponsiveContainer>
+      </Chart>
+      {/* {tooltip?.show && (
+                <CustomToolTip {...tooltip} />
+              )} */}
+      <MediaTable mediaData={mediaData}/>
+    </Wrap>
+  </Container>
 )
         }
-
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+const Wrap = styled.div`
+  margin: 0 auto;
+  width: 45rem;
+  background-color: white;
+  border-radius: 15px;
+  overflow-x: scroll;
+`;
 const Chart = styled.div`
-  width: 50rem;
-  height: 30rem;
+  width: 100%;
+  height: 20rem;
+  margin: 0 auto;
+  padding-top:4rem;
 `;
