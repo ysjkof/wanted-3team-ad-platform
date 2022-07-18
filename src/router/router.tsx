@@ -4,6 +4,7 @@ import Main from '../pages/Main';
 import Management from '../pages/Management';
 import MediaStatus from '../components/MediaStatus';
 import Test from '../pages/Test';
+import TotalAdStatus from '../components/TotalAdStatus';
 
 function Router() {
   return (
@@ -12,7 +13,15 @@ function Router() {
         <Route path="" element={<Layout />}>
           <Route index element={<p>대시보드</p>} />
           <Route path="management" element={<Management />} />
-          <Route path="dashboard" element={<MediaStatus />} />
+          <Route
+            path="dashboard"
+            element={
+              <>
+                <TotalAdStatus />
+                <MediaStatus />
+              </>
+            }
+          />
           <Route path="*" element={<div>페이지가 없습니다</div>} />
         </Route>
         <Route path="/test" element={<Test />} />

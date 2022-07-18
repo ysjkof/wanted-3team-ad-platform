@@ -15,6 +15,15 @@ export interface DailyIntegrationReport {
   date: string;
 }
 
+export interface WeeklyIntegrationReport {
+  roas: number;
+  cost: number;
+  imp: number;
+  click: number;
+  conv: number;
+  convValue: number;
+}
+
 export interface DailyMediaReport {
   channel: string;
   date: string;
@@ -28,6 +37,12 @@ export interface DailyMediaReport {
   cpa: number;
   roas: number;
 }
+
+export type WeekArr = DailyIntegrationReport[];
+
+export type singleDataCard = { name: string; value: string; change: string };
+
+export type WeeklyTotalData = singleDataCard[];
 
 export interface AdvertisingManagement {
   count: number;

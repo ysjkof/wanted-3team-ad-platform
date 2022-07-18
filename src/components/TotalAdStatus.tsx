@@ -1,58 +1,86 @@
 import styled from 'styled-components';
 import { theme } from '../theme';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Total } from './TotalDataExample';
-
-type DailyData = {
-  imp: number;
-  click: number;
-  cost: number;
-  conv: number;
-  convValue: number;
-  ctr: number;
-  cvr: number;
-  cpc: number;
-  cpa: number;
-  roas: number;
-  date: string;
-};
-
-type WeekArr = DailyData[];
-
-type singleDataCard = { name: string; value: string; change: string };
-
-type WeeklyTotalData = singleDataCard[];
+import { prevWeekExample, currWeekExample } from './TotalDataExample';
+import { WeeklyIntegrationReport, WeekArr, singleDataCard, WeeklyTotalData } from '../database/dbTypes';
 
 export default function TotalAdStatus() {
-  const newTotal = Total.map((data) => {
+  const newTotal = prevWeekExample.map((data) => {
     const date = new Date(data.date);
     const dateString = `${date.getMonth() + 1}월 ${date.getDate()}일`;
     return { ...data, dateformat: dateString };
   });
 
-  const getWeeklyTotalData = (weekArr: WeekArr): WeeklyTotalData => {
-    const roas = parseInt(`${weekArr.reduce((a, b) => a + b.roas, 0) / 7}`);
-    const cost = weekArr.reduce((a, b) => a + b.cost, 0).toLocaleString();
-    const imp = weekArr.reduce((a, b) => a + b.imp, 0).toLocaleString();
-    const click = weekArr.reduce((a, b) => a + b.click, 0).toLocaleString();
-    const conv = weekArr.reduce((a, b) => a + b.conv, 0).toLocaleString();
-    const convValue = weekArr.reduce((a, b) => a + b.convValue, 0).toLocaleString();
-    const weeklyData = [
-      { name: 'ROAS', value: `${roas}%`, change: '▲18%' },
-      { name: '광고비', value: `${cost}원`, change: '▲18%' },
-      { name: '노출수', value: `${imp}회`, change: '▲18%' },
-      { name: '클릭수', value: `${click}회`, change: '▲18%' },
-      { name: '전환수', value: `${conv}회`, change: '▲18%' },
-      { name: '매출', value: `${convValue}원`, change: '▲18%' },
-    ];
-    return weeklyData;
+  const getWeekTotalData = (weekData: WeekArr): WeeklyIntegrationReport => {
+    const WeekTotalData = weekData.reduce(
+      (prev, cur) => {
+        for (const key in prev) {
+          prev[key as keyof typeof prev] = prev[key as keyof typeof prev] + cur[key as keyof typeof prev];
+        }
+        return prev;
+      },
+      {
+        roas: 0,
+        cost: 0,
+        imp: 0,
+        click: 0,
+        conv: 0,
+        convValue: 0,
+      },
+    );
+    WeekTotalData.roas = Math.round(WeekTotalData.roas / 7);
+    return WeekTotalData;
   };
-  const weeklyTotalData = getWeeklyTotalData(Total);
+
+  const getWeeklyChange = (prev: WeeklyIntegrationReport, curr: WeeklyIntegrationReport): WeeklyIntegrationReport => {
+    let result: WeeklyIntegrationReport = prev;
+    for (const key in prev) {
+      result[key as keyof typeof prev] = curr[key as keyof typeof prev] - prev[key as keyof typeof prev];
+    }
+    return result;
+  };
+
+  const currWeekTotalData = getWeekTotalData(currWeekExample);
+  const prevWeekTotalData = getWeekTotalData(prevWeekExample);
+  const changeOfWeekTotalData = getWeeklyChange(prevWeekTotalData, currWeekTotalData);
+
+  const weeklyData: WeeklyTotalData = [
+    {
+      name: 'ROAS',
+      value: `${currWeekTotalData.roas}%`,
+      change: `${changeOfWeekTotalData.roas}%`,
+    },
+    {
+      name: '광고비',
+      value: `${Math.round(currWeekTotalData.cost / 10000)}만원`,
+      change: `${Math.round(changeOfWeekTotalData.cost / 10000)}만원`,
+    },
+    {
+      name: '노출수',
+      value: `${Math.round(currWeekTotalData.imp / 10000)}만회`,
+      change: `${Math.round(changeOfWeekTotalData.imp / 10000)}만회`,
+    },
+    {
+      name: '클릭수',
+      value: `${currWeekTotalData.click.toLocaleString()}회`,
+      change: `${changeOfWeekTotalData.click}회`,
+    },
+    {
+      name: '전환수',
+      value: `${currWeekTotalData.conv.toLocaleString()}회`,
+      change: `${changeOfWeekTotalData.conv}회`,
+    },
+    {
+      name: '매출',
+      value: `${Math.round(currWeekTotalData.convValue / 10000)}만원`,
+      change: `${Math.round(changeOfWeekTotalData.convValue / 10000)}만원`,
+    },
+  ];
 
   return (
     <Container>
       <CardContainer>
-        {weeklyTotalData.map((data: singleDataCard) => (
+        {weeklyData.map((data: singleDataCard) => (
           <Card>
             <dt>{data.name}</dt>
             <div>
@@ -120,7 +148,7 @@ const Card = styled.div`
     justify-content: space-between;
     align-items: flex-end;
     .value {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: ${theme.darkFontColor};
     }
