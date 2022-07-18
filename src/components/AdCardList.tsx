@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Advertising } from '../databaseTypes';
+import { Advertising } from '../interfaces/database';
 import { HandleDeleteClick } from '../pages/Management';
 import AdCard from './AdCard';
 

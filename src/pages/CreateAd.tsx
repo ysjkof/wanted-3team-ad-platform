@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { theme } from '../theme';
-import useAdvertisingManagementQuery from '../hook/useAdvertisingManagementQuery';
-import { AdType, AdvertisingStatus } from '../databaseTypes';
+import { theme } from '../styles/theme';
+import useAdvertisingManagementQuery from '../hook/useAdvertisingManagement';
+import { AdType, AdvertisingStatus } from '../interfaces/database';
 
 export default function CreateAd() {
   const adTypeRef = useRef<HTMLSelectElement>(null);
