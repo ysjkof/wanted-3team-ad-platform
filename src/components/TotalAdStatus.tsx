@@ -20,10 +20,18 @@ type singleDataCard = { name: string; value: string; change: string };
 
 type WeeklyTotalData = singleDataCard[];
 
-type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
-type TotalAdStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
+type StartAndEndDate = { startDate: Date; endDate: Date };
+type TotalAdStatusProps = { selectedPeriod: StartAndEndDate };
 
 export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
+  // ** prps 받은 후 활성화 할 코드
+  // selectedPeriod.startDate.setDate(selectedPeriod.startDate.getDate()-7);
+  // const { loading, integrationReports, getIntegrationStatus } = useIntegrationStatusQuery({
+  //   gte: selectedPeriod.startDate,
+  //   lte: selectedPeriod.endDate,
+  // });
+
+  //props 받기 전 임의로 날짜 넣은 코드
   const { loading, integrationReports, getIntegrationStatus } = useIntegrationStatusQuery({
     gte: new Date('2022-03-01'),
     lte: new Date('2022-03-14'),
