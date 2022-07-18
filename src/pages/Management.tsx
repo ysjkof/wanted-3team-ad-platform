@@ -1,105 +1,40 @@
 import { useState } from 'react';
 import { theme } from '../theme';
 import styled from 'styled-components';
+import { AdvertisingStatus } from '../databaseTypes';
+import useAdvertisingManagementQuery from '../hook/useAdvertisingManagementQuery';
 import AdCardList from '../components/AdCardList';
+import { useNavigate } from 'react-router-dom';
 
-type AdType = 'web' | 'app';
-type Status = 'active' | 'ended';
-type SelectedStatus = 'all' | Status;
-
-export interface Ad {
-  id: number;
-  adType: AdType;
-  title: string;
-  budget: number;
-  status: Status;
-  startDate: string;
-  endDate: string | null;
-  report: {
-    cost: number;
-    convValue: number;
-    roas: number;
-  };
-}
-
-interface Ads {
-  count: number;
-  ads: Ad[];
-}
-
-const initAds: Ads = {
-  count: 4,
-  ads: [
-    {
-      id: 1,
-      adType: 'web',
-      title: '광고 1234',
-      budget: 500000,
-      status: 'active',
-      startDate: '2020-10-19T00:00:00',
-      endDate: null,
-      report: {
-        cost: 267144117,
-        convValue: 1157942685,
-        roas: 433,
-      },
-    },
-    {
-      id: 2,
-      adType: 'web',
-      title: '광고 12345',
-      budget: 200000,
-      status: 'ended',
-      startDate: '2021-01-22T00:00:00',
-      endDate: '2021-12-21T23:59:59',
-      report: {
-        cost: 169837362,
-        convValue: 745438798,
-        roas: 438,
-      },
-    },
-    {
-      id: 3,
-      adType: 'web',
-      title: '원티드 광고 1234',
-      budget: 150000,
-      status: 'active',
-      startDate: '2022-01-01T00:00:00',
-      endDate: null,
-      report: {
-        cost: 699481243,
-        convValue: 898716259,
-        roas: 1284,
-      },
-    },
-    {
-      id: 4,
-      adType: 'app',
-      title: '광고 9912',
-      budget: 240000,
-      status: 'active',
-      startDate: '2022-02-10T00:00:00',
-      endDate: null,
-      report: {
-        cost: 9300222,
-        convValue: 38234789,
-        roas: 411,
-      },
-    },
-  ],
-};
+type SelectedStatus = 'all' | AdvertisingStatus;
+export type HandleDeleteClick = (id: number) => void;
 
 export default function Management() {
   const [selectedStatus, setSelectedStatus] = useState<SelectedStatus>('all');
 
-  const filteredAds = initAds.ads.filter((ad) => (selectedStatus !== 'all' ? ad.status === selectedStatus : ad));
+  const { managementState, deleteAdversising, getManagementState } = useAdvertisingManagementQuery();
+
+  const navigate = useNavigate();
+
+  const filteredAds = managementState.ads.filter((ad) =>
+    selectedStatus !== 'all' ? ad.status === selectedStatus : ad,
+  );
 
   const handleSelectedStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as SelectedStatus;
     setSelectedStatus(value);
   };
 
-  const navigateToCreateAd = () => {};
+  const navigateToCreateAd = () => {
+    navigate('/create');
+  };
+
+  const handleDeleteClick = async (id: number) => {
+    if (confirm('정말로 삭제 하시겠습니까?')) {
+      await deleteAdversising(id);
+      await getManagementState();
+    }
+  };
 
   return (
     <Container>
@@ -116,7 +51,7 @@ export default function Management() {
           </div>
         </FlexBetween>
         <AdCardListWrapper>
-          <AdCardList ads={filteredAds} />
+          <AdCardList ads={filteredAds} handleDeleteClick={handleDeleteClick} />
         </AdCardListWrapper>
       </Contents>
     </Container>

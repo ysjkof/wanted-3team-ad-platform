@@ -13,10 +13,9 @@ function Router() {
       <Routes>
         <Route path="" element={<Layout />}>
           <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="management" element={<Management />} />
-          {/* <Route path="dashboard" element={<Dashboard />} /> */}
-          {/* <Route path="create" element={<CreateAd />} /> */}
-          <Route path="dashboard" element={<CreateAd />} />
+          <Route path="create" element={<CreateAd />} />
           <Route path="*" element={<div>페이지가 없습니다</div>} />
         </Route>
         <Route path="/test" element={<Test />} />

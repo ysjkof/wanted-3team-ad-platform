@@ -1,6 +1,9 @@
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../theme';
+import useAdvertisingManagementQuery from '../hook/useAdvertisingManagementQuery';
+import { AdType, AdvertisingStatus } from '../databaseTypes';
 
 export default function CreateAd() {
   const adTypeRef = useRef<HTMLSelectElement>(null);
@@ -9,6 +12,10 @@ export default function CreateAd() {
   const statusRef = useRef<HTMLSelectElement>(null);
   const startDateRef = useRef<HTMLInputElement>(null);
   const endDateRef = useRef<HTMLInputElement>(null);
+
+  const { createAdvertising } = useAdvertisingManagementQuery();
+
+  const navigate = useNavigate();
 
   const checkFormValuesEntered = () => {
     const isFormValuesVaEntered =
@@ -19,37 +26,43 @@ export default function CreateAd() {
       startDateRef.current?.value &&
       endDateRef.current?.value;
 
-    return isFormValuesVaEntered;
+    return !!isFormValuesVaEntered;
   };
 
-  const checkFormValuesValid = (newAd: any) => {
-    const isFormValuesValid = !newAd.title.trim().length && newAd.budget > 0 && newAd.startDate < newAd.endDate;
+  const checkFormValuesValid = () => {
+    const isFormValuesValid =
+      !!titleRef.current?.value.trim().length &&
+      +budgetRef.current!.value > 0 &&
+      startDateRef.current!.value < endDateRef.current!.value;
 
     return isFormValuesValid;
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!checkFormValuesEntered) {
+
+    if (!checkFormValuesEntered()) {
       alert('값을 모두 채워주세요!');
       return;
     }
 
-    const newAd = {
-      adType: adTypeRef.current?.value,
-      title: titleRef.current?.value,
-      budget: budgetRef.current?.value,
-      status: statusRef.current?.value,
-      startDate: startDateRef.current?.value + 'T00:00:00',
-      endDate: endDateRef.current?.value + 'T00:00:00',
-    };
-
-    if (!checkFormValuesValid(newAd)) {
+    if (!checkFormValuesValid()) {
       alert('유효하지 않은 값이 있습니다!');
       return;
     }
 
-    console.log(newAd);
+    const newAd = {
+      adType: adTypeRef.current!.value as AdType,
+      title: titleRef.current!.value,
+      budget: +budgetRef.current!.value,
+      status: statusRef.current!.value as AdvertisingStatus,
+      startDate: startDateRef.current!.value + 'T00:00:00',
+      endDate: endDateRef.current!.value + 'T23:59:59',
+    };
+
+    createAdvertising(newAd);
+
+    navigate('/management');
   };
 
   return (
@@ -58,7 +71,7 @@ export default function CreateAd() {
       <Form onSubmit={(event) => handleSubmit(event)}>
         <Wrapper>
           광고 타입 :
-          <select ref={adTypeRef}>
+          <select ref={adTypeRef} required>
             <option value="">광고 타입</option>
             <option value="web">웹</option>
             <option value="app">앱</option>
@@ -66,15 +79,15 @@ export default function CreateAd() {
         </Wrapper>
         <Wrapper>
           타이틀 :
-          <input ref={titleRef} placeholder="타이틀" type="text" />
+          <input ref={titleRef} placeholder="타이틀" type="text" required />
         </Wrapper>
         <Wrapper>
           일 희망 예산 :
-          <input ref={budgetRef} placeholder="일 희망 예산" type="number" />
+          <input ref={budgetRef} placeholder="일 희망 예산" type="number" required />
         </Wrapper>
         <Wrapper>
           광고 상태 :
-          <select ref={statusRef}>
+          <select ref={statusRef} required>
             <option value="">상태</option>
             <option value="active">현재 진행중</option>
             <option value="ended">종료</option>
@@ -82,11 +95,11 @@ export default function CreateAd() {
         </Wrapper>
         <Wrapper>
           광고 생성일 :
-          <input ref={startDateRef} type="date" />
+          <input ref={startDateRef} type="date" required />
         </Wrapper>
         <Wrapper>
           광고 종료일 :
-          <input ref={endDateRef} type="date" />
+          <input ref={endDateRef} type="date" required />
         </Wrapper>
         <div>
           <Button>생성</Button>
