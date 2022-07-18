@@ -2,7 +2,7 @@ import styled from "styled-components"
 import {media} from './mediaDataExample'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
 import { useState } from "react";
-import { DailyMediaReport } from "../database/dbTypes";
+import { DailyMediaReport } from "../databaseTypes";
 import MediaTable from "./MediaTable";
 // import CustomToolTip from "./ToolTip";
 
@@ -15,7 +15,6 @@ interface I_customToolTip {
   content:any
 }
 const channelId = {
-  // date: 0,
   cost: 0,
   roas: 1,
   imp: 2,
@@ -25,9 +24,37 @@ const channelId = {
   ctr: 6,
   cpc: 7,
   cpa: 8,
- 
 }
-export default function MediaStatus(){
+const barKeys = [['cost.kakao', 'cost.google', 'cost.naver', 'cost.facebook'],
+  ['imp.kakao', 'imp.google', 'imp.naver', 'imp.facebook'],
+  ['click.kakao', 'click.google', 'click.naver', 'click.facebook'],
+  ['roas.kakao', 'roas.google', 'roas.naver', 'roas.facebook'],
+  ['cvr.kakao', 'cvr.google', 'cvr.naver', 'cvr.facebook']
+];
+export interface I_barColors {
+    kakao: string,
+    google: string,
+    naver: string,
+    facebook :string
+  }
+  const barColors:I_barColors = {
+    kakao: "#f9E000",
+    google: "#AC8AF8",
+    naver: "#85DA47",
+    facebook :"#4FADF7"
+  }
+const channelName = {
+  facebook:"페이스북",
+  naver:"네이버",
+  kakao:"카카오",
+  google:"구글"
+}
+type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
+type TotalAdStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
+
+export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
+  console.log("페리오드",selectedPeriod);
+  
   const beforeDate = "2022-02-01";
   const afterDate = "2022-02-07"
     const [tooltip, setToolTip] = useState<I_customToolTip>();
@@ -93,24 +120,8 @@ export default function MediaStatus(){
   }
   console.log("데이터",mediaData);
 
-  const barKeys = [['cost.kakao', 'cost.google', 'cost.naver', 'cost.facebook'],
-    ['imp.kakao', 'imp.google', 'imp.naver', 'imp.facebook'],
-    ['click.kakao', 'click.google', 'click.naver', 'click.facebook'],
-    ['roas.kakao', 'roas.google', 'roas.naver', 'roas.facebook'],
-    ['cvr.kakao', 'cvr.google', 'cvr.naver', 'cvr.facebook']
-  ];
-  interface I_barColors {
-    kakao: string,
-    google: string,
-    naver: string,
-    facebook :string
-  }
-  const barColors:I_barColors = {
-    kakao: "#f9E000",
-    google: "#AC8AF8",
-    naver: "#85DA47",
-    facebook :"#4FADF7"
-  }
+
+
   const BarWithBorder = (borderHeight: number, borderColor: string) => {
   return (props: any) => {
     const { fill, x, y, width, height } = props;
@@ -174,11 +185,38 @@ type T_Position = {x:number,y:number}
 //   )
 // }
 const CustomToolTip = ({ active, payload, label }) => {
-  console.log("액티브",active);
-  console.log("페이로드",payload);
-  console.log("라벨",label);
-  
-  
+  // console.log("액티브",active);
+  // console.log("페이로드",payload);
+  // console.log("라벨",label);
+}
+interface I_legendPayload {
+  color: string,
+  dataKey: string,
+  inactive: boolean,
+  payload: object,
+  type: string,
+  value: string,
+}
+const renderLegend = ({payload}:I_legendPayload) => {
+  const result = payload.reduce((obj:any,val:I_legendPayload)=>{
+    return obj.includes(val.dataKey.split(".")[1]) ? obj : [...obj,val.dataKey.split(".")[1]]
+  },[])
+    return (
+    <LegendUl>
+      {
+        result.map((item:string, index:number) => {
+          console.log("아이템",item);
+          
+          return(
+            <LegendLi>
+              <LegendCircle style={{backgroundColor:`${barColors[item]}`}}/>
+              <LegendValue key={`item-${index}`}>{channelName[item]}</LegendValue>
+            </LegendLi>
+          )
+        })
+      }
+    </LegendUl>
+  );
 }
   return (
   <Container>
@@ -199,11 +237,11 @@ const CustomToolTip = ({ active, payload, label }) => {
             }}
             barSize={30}
           >
+          <Legend content={renderLegend} />
           <Tooltip cursor={false} wrapperStyle={{ top: -150, left: 200 }} content={<CustomToolTip/>} />
           <CartesianGrid  horizontal={true} vertical={false} dx={-200} stroke="#E6E7E8"/>
           <XAxis dataKey="name" stroke="#E6E7E8" tick={{dy:10,fontSize:"12px" , stroke:"#c5cace" , fontWeight:"0"}}  tickLine={false} />
-          {/* <YAxis domain={domain} tick={{ticks}} /> */}
-          <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
+          <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} style={{textAlign:"left"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
           {barKeys[0].map((key:any)=>{
             const bars = [];
             bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]}  radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} />)
@@ -240,7 +278,7 @@ const CustomToolTip = ({ active, payload, label }) => {
       {/* {tooltip?.show && (
                 <CustomToolTip {...tooltip} />
               )} */}
-      <MediaTable mediaData={mediaData}/>
+      <MediaTable mediaData={mediaData} barColors={barColors}/>
     </Wrap>
   </Container>
 )
@@ -262,3 +300,23 @@ const Chart = styled.div`
   margin: 0 auto;
   padding-top:4rem;
 `;
+const LegendUl = styled.ul`
+  display: flex;
+  font-size: 10px;
+  float: right;
+  margin-top: 2rem;
+`;
+
+const LegendLi = styled.li`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-left: 1rem;
+`;
+const LegendCircle = styled.span`
+  width: 8px;
+  height: 8px;
+  border-radius: 5px;
+`;
+const LegendValue = styled.div``;
