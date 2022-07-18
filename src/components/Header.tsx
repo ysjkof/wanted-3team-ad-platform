@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { FiSettings, FiBell, FiUser } from 'react-icons/fi';
-import { theme } from '../theme';
+import { theme } from '../styles/theme';
 export default function Header() {
   return (
     <>

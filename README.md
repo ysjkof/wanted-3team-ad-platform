@@ -31,38 +31,40 @@
 
 ## 커스텀 훅 문서(데이터 불러오기)
 
-### useMediaQuery
+### useMediaStatus
 
 **매체 현황**과 관련된 기능
 
-- 훅을 실행하면 `{ loading, mediaReports, dateOfData, getMediaReports }` 3개 값을 가진 객체를 반환한다.
+- 훅을 실행하면 `{ loading, mediaStatus, getMediaStatus }` 3개 값을 가진 객체를 반환한다.
 
 - import할 때 매개변수로 queryOption을 받고 그 날짜로 초기 값을 불러온다.
 
 - loading은 훅이 데이터를 불러오는 동안 `boolean`으로 반환한다.
 
-- mediaReports은 **매체 현황** 값을 갖는다.
+- mediaStatus은 **매체 현황** 값을 갖는다.
 
-- getMediaReports은 queryOption을 주고 실행하면 option에 맞는 **새로운 값을 요청**한다.
+- getMediaStatus은 queryOption을 주고 실행하면 option에 맞는 **새로운 값을 요청**한다.
+  - queryField는 선택사항으로 기본값은 "date"다. 해당 앱에서는 쓸 일이 없을 거 같다.
 
 ```ts
 interface QueryOption {
   gte: Date;
   lte: Date;
+  queryField?: string;
 }
 ```
 
-### useIntegrationStatusQuery
+### useTotalAdStatus
 
 **통합 광고 현황**과 관련된 기능
 
-- 훅을 실행하면 `{ loading, integrationReports, dateOfData, getIntegrationStatus }` 3개 값을 가진 객체를 반환한다.
+- 훅을 실행하면 `{ loading, totalAdStatus, getTotalAdStatus }` 3개 값을 가진 객체를 반환한다.
 
 - import할 때 매개변수로 queryOption을 받고 그 날짜로 초기 값을 불러온다.
 
-- integrationReports은 **광고 현황** 값을 갖는다.
+- totalAdStatus은 **광고 현황** 값을 갖는다.
 
-- getIntegrationStatus은 queryOption을 주고 실행하면 option에 맞는 **새로운 값을 요청**한다.
+- getTotalAdStatus은 queryOption을 주고 실행하면 option에 맞는 **새로운 값을 요청**한다.
 
 ### useAdvertisingManagementQuery
 
@@ -106,8 +108,6 @@ createAdvertising({
   title: '테스트 광고 생성',
   status: 'active',
 });
-<<<<<<< HEAD
-=======
 
 // 광고 수정
 modifyAdversising({
@@ -118,6 +118,5 @@ modifyAdversising({
 });
 
 // 광고 삭제
-deleteAdversising(5);
->>>>>>> fd09a49aec1f35936c804fffdfca1ba26d64b7a8
+deleteAdversising(5); // 광고 id만 전달한다
 ```

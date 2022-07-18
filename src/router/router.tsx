@@ -1,8 +1,5 @@
-
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
-import MediaStatus from '../components/MediaStatus';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from '../Layout';
-import Main from '../pages/Main';
 import Management from '../pages/Management';
 import Test from '../pages/Test';
 import Dashboard from '../pages/Dashboard';
