@@ -86,8 +86,3 @@ const Li = styled.li`
   height: 2.2rem;
   align-items: center;
 `;
-
-
-
-
-

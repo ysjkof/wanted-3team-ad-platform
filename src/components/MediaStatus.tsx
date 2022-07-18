@@ -1,9 +1,10 @@
 import styled from "styled-components"
 import {media} from './mediaDataExample'
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip } from 'recharts';
 import { useState } from "react";
 import { DailyMediaReport } from "../databaseTypes";
 import MediaTable from "./MediaTable";
+import { barColors, barKeys, mediaReduce, renderLegend, toPercent } from "./MediaUtils";
 // import CustomToolTip from "./ToolTip";
 
 interface I_customToolTip {
@@ -14,110 +15,17 @@ interface I_customToolTip {
   },
   content:any
 }
-const channelId = {
-  cost: 0,
-  roas: 1,
-  imp: 2,
-  click: 3,
-  cvr: 4,
-  convValue: 5,
-  ctr: 6,
-  cpc: 7,
-  cpa: 8,
-}
-const barKeys = [['cost.kakao', 'cost.google', 'cost.naver', 'cost.facebook'],
-  ['imp.kakao', 'imp.google', 'imp.naver', 'imp.facebook'],
-  ['click.kakao', 'click.google', 'click.naver', 'click.facebook'],
-  ['roas.kakao', 'roas.google', 'roas.naver', 'roas.facebook'],
-  ['cvr.kakao', 'cvr.google', 'cvr.naver', 'cvr.facebook']
-];
-export interface I_barColors {
-    kakao: string,
-    google: string,
-    naver: string,
-    facebook :string
-  }
-  const barColors:I_barColors = {
-    kakao: "#f9E000",
-    google: "#AC8AF8",
-    naver: "#85DA47",
-    facebook :"#4FADF7"
-  }
-const channelName = {
-  facebook:"페이스북",
-  naver:"네이버",
-  kakao:"카카오",
-  google:"구글"
-}
+
 type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
 type TotalAdStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
 
 export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
   console.log("페리오드",selectedPeriod);
-  
   const beforeDate = "2022-02-01";
   const afterDate = "2022-02-07"
-    const [tooltip, setToolTip] = useState<I_customToolTip>();
-  const mediaReduce = (arrData:DailyMediaReport[],before:string,after:string) => {
-    const startMonth = Number(before.split("-")[1]);
-    const startDate = Number(before.split("-")[2]);
-    const endDate = Number(after.split("-")[2]);
-    let count = Number(startDate);
-    return arrData?.reduce((obj:any,val:any,i:number) => {
-        if(Number(val.date.split("-")[1]) === startMonth && Number(val.date.split("-")[2]) === count){
-            obj[channelId.cost] = {
-              cost:{
-                [val.channel]:val.cost,
-                ...obj[channelId.cost]?.cost,
-              },
-              name:"광고비",
-              total: obj[channelId.cost] === undefined ? val.cost : obj[channelId.cost].total + val.cost,
-            },
-            obj[channelId.roas] = {
-              roas:{
-                [val.channel]:val.roas,
-                ...obj[channelId.roas]?.roas,
-              },
-              name:"매출",
-              total: obj[channelId.roas] === undefined ? val.roas : obj[channelId.roas].total + val.roas,
-            },
-            obj[channelId.imp] = {
-              imp:{
-                [val.channel]:val.imp,
-                ...obj[channelId.imp]?.imp,
-              },
-              name:"노출수",
-              total: obj[channelId.imp] === undefined ? val.imp : obj[channelId.imp].total + val.imp,
-            },
-            obj[channelId.click] = {
-              click:{
-                [val.channel]:val.click,
-                ...obj[channelId.click]?.click,
-              },
-              name:"클릭 수",
-              total: obj[channelId.click] === undefined ? val.click : obj[channelId.click].total + val.click,
-            },
-            obj[channelId.cvr] = {
-              cvr:{
-                [val.channel]:val.cvr,
-                ...obj[channelId.cvr]?.cvr,
-              },
-              name:"전환수",
-              total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
-            }
-            if(count !== endDate) count = count + 1;
-          }
-          return obj
-    },[])
-  }
+  const [tooltip, setToolTip] = useState<I_customToolTip>();
   const mediaData = mediaReduce(media,beforeDate,afterDate)
-  const toPercent = (tick:number) => {
-    const ticks:string[] = [];
-    if(tick !== 0){
-      ticks.push(`${tick * 100}%`)
-    } 
-    return ticks;
-  }
+  
   console.log("데이터",mediaData);
 
 
@@ -157,12 +65,12 @@ const Content = ({name , value}:any) => {
   )
 }
 const showTooltip = (data:any , i:any , event:any) => {
-  // const value = data[data.tooltipPayload[0].dataKey]
-  // setToolTip({
-  //   show:true,
-  //   position: {x:event.clientX,y:event.clientY},
-  //   content: <Content name={data.tooltipPayload[0].dataKey} value={value} />
-  // })
+  const value = data[data.tooltipPayload[0].dataKey]
+  setToolTip({
+    show:true,
+    position: {x:event.clientX,y:event.clientY},
+    content: <Content name={data.tooltipPayload[0].dataKey} value={value} />
+  })
 }
 const leaveTooltip = () => {
     setToolTip({
@@ -172,55 +80,28 @@ const leaveTooltip = () => {
   })
 }
 type T_Position = {x:number,y:number}
-// const CustomToolTip = ({position,content}:any) => {
-//   const {x,y} = position || {};
-//   console.log(position);
+const CustomToolTip = ({position,content}:any) => {
+  const {x,y} = position || {};
+  console.log("포지션",position);
   
-//   return(
-//     <div
-//     style={{ width:"50px",height:"50px",backgroundColor:"blueviolet" }}
-//     >
-//       {content}
-//     </div>
-//   )
+  return(
+    <div
+    style={{ left:"x", top:"y", width:"50px",height:"50px",backgroundColor:"blueviolet" }}
+    >
+      {content}
+    </div>
+  )
+}
+// const CustomToolTip = ({ active, payload, label }) => {
+//   // console.log("액티브",active);
+//   // console.log("페이로드",payload);
+//   // console.log("라벨",label);
 // }
-const CustomToolTip = ({ active, payload, label }) => {
-  // console.log("액티브",active);
-  // console.log("페이로드",payload);
-  // console.log("라벨",label);
-}
-interface I_legendPayload {
-  color: string,
-  dataKey: string,
-  inactive: boolean,
-  payload: object,
-  type: string,
-  value: string,
-}
-const renderLegend = ({payload}:I_legendPayload) => {
-  const result = payload.reduce((obj:any,val:I_legendPayload)=>{
-    return obj.includes(val.dataKey.split(".")[1]) ? obj : [...obj,val.dataKey.split(".")[1]]
-  },[])
-    return (
-    <LegendUl>
-      {
-        result.map((item:string, index:number) => {
-          console.log("아이템",item);
-          
-          return(
-            <LegendLi>
-              <LegendCircle style={{backgroundColor:`${barColors[item]}`}}/>
-              <LegendValue key={`item-${index}`}>{channelName[item]}</LegendValue>
-            </LegendLi>
-          )
-        })
-      }
-    </LegendUl>
-  );
-}
+
+
   return (
   <Container>
-    <div>매체 현황</div>
+    <Title>매체 현황</Title>
     <Wrap>
       <Chart>
       <ResponsiveContainer width="100%" height="100%">
@@ -238,7 +119,6 @@ const renderLegend = ({payload}:I_legendPayload) => {
             barSize={30}
           >
           <Legend content={renderLegend} />
-          <Tooltip cursor={false} wrapperStyle={{ top: -150, left: 200 }} content={<CustomToolTip/>} />
           <CartesianGrid  horizontal={true} vertical={false} dx={-200} stroke="#E6E7E8"/>
           <XAxis dataKey="name" stroke="#E6E7E8" tick={{dy:10,fontSize:"12px" , stroke:"#c5cace" , fontWeight:"0"}}  tickLine={false} />
           <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} style={{textAlign:"left"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
@@ -283,13 +163,17 @@ const renderLegend = ({payload}:I_legendPayload) => {
   </Container>
 )
         }
+const Title = styled.h2`
+  font-size: 16px;
+  margin-bottom: 1.2rem;
+`;
 const Container = styled.div`
+  padding-top: 4.5rem;
   width: 100%;
   height: 100%;
 `;
 const Wrap = styled.div`
   margin: 0 auto;
-  width: 45rem;
   background-color: white;
   border-radius: 15px;
   overflow-x: scroll;
@@ -300,23 +184,3 @@ const Chart = styled.div`
   margin: 0 auto;
   padding-top:4rem;
 `;
-const LegendUl = styled.ul`
-  display: flex;
-  font-size: 10px;
-  float: right;
-  margin-top: 2rem;
-`;
-
-const LegendLi = styled.li`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-left: 1rem;
-`;
-const LegendCircle = styled.span`
-  width: 8px;
-  height: 8px;
-  border-radius: 5px;
-`;
-const LegendValue = styled.div``;

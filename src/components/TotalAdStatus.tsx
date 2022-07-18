@@ -23,7 +23,10 @@ type singleDataCard = { name: string; value: string; change: string };
 
 type WeeklyTotalData = singleDataCard[];
 
-export default function TotalAdStatus() {
+type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
+type TotalAdStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
+
+export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
   const newTotal = Total.map((data) => {
     const date = new Date(data.date);
     const dateString = `${date.getMonth() + 1}월 ${date.getDate()}일`;
@@ -92,7 +95,6 @@ export default function TotalAdStatus() {
 }
 
 const Container = styled.div`
-  width: 90%;
   height: 30rem;
   padding: 2rem;
   background-color: white;
