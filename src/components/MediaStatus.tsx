@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer
 import { useState } from "react";
 import { DailyMediaReport } from "../databaseTypes";
 import MediaTable from "./MediaTable";
-import { barColors, barKeys, mediaReduce, renderLegend, toPercent } from "./MediaUtils";
+import { barColors, barKeys, mediaChartReduce, renderLegend, toPercent } from "./MediaUtils";
 // import CustomToolTip from "./ToolTip";
 
 interface I_customToolTip {
@@ -24,7 +24,7 @@ export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
   const beforeDate = "2022-02-01";
   const afterDate = "2022-02-07"
   const [tooltip, setToolTip] = useState<I_customToolTip>();
-  const mediaData = mediaReduce(media,beforeDate,afterDate)
+  const mediaData = mediaChartReduce(media,beforeDate,afterDate)
   
   console.log("데이터",mediaData);
 
@@ -82,7 +82,7 @@ const leaveTooltip = () => {
 type T_Position = {x:number,y:number}
 const CustomToolTip = ({position,content}:any) => {
   const {x,y} = position || {};
-  console.log("포지션",position);
+  console.log("포지션",content);
   
   return(
     <div
@@ -120,7 +120,7 @@ const CustomToolTip = ({position,content}:any) => {
           >
           <Legend content={renderLegend} />
           <CartesianGrid  horizontal={true} vertical={false} dx={-200} stroke="#E6E7E8"/>
-          <XAxis dataKey="name" stroke="#E6E7E8" tick={{dy:10,fontSize:"12px" , stroke:"#c5cace" , fontWeight:"0"}}  tickLine={false} />
+          <XAxis dataKey="name" stroke="#E6E7E8" tick={{dy:10,fontSize:"12px" , stroke:"#c5cace" , fontWeight:"0"}} tickLine={false} />
           <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} style={{textAlign:"left"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
           {barKeys[0].map((key:any)=>{
             const bars = [];
@@ -147,11 +147,6 @@ const CustomToolTip = ({position,content}:any) => {
             bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" && [5,5,0,0]} onMouseOver={showTooltip}/>)
             return bars;
           })}
-          {/* <Bar dataKey="kakao" stackId="aStack" fill="#f9e000" barSize={40} shape={BarWithBorder(1, "#ffffff")} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
-          <Bar dataKey="google" stackId="aStack" fill="#AC8AF8" shape={BarWithBorder(1, "#ffffff")}  onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
-          <Bar dataKey="naver" stackId="aStack" fill="#85DA47" shape={BarWithBorder(1, "#ffffff")} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>
-          <Bar dataKey="facebook" stackId="aStack" fill="#4FADF7" radius={[5,5,0,0]} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/> */}
-          
             </BarChart>
           </ResponsiveContainer>
       </Chart>
@@ -160,6 +155,7 @@ const CustomToolTip = ({position,content}:any) => {
               )} */}
       <MediaTable mediaData={mediaData} barColors={barColors}/>
     </Wrap>
+    {tooltip?.show && <CustomToolTip {...tooltip}/>}
   </Container>
 )
         }
@@ -176,7 +172,6 @@ const Wrap = styled.div`
   margin: 0 auto;
   background-color: white;
   border-radius: 15px;
-  overflow-x: scroll;
 `;
 const Chart = styled.div`
   width: 100%;

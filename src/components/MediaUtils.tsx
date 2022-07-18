@@ -1,11 +1,24 @@
 import styled from "styled-components";
+interface I_MediaData {
+  channel: String, // 채널
+  date: String, // 날짜
+  imp: Number, // 노출횟수
+  click: Number, // 클릭수
+  cost: Number, // 광고비용 / 비용
+  convValue: Number, // 매출
+  ctr: Number, // 광고 노출 대비 클릭 수
+  cvr: Number, // 전환 / 구매 전환율
+  cpc: Number, // 클릭당 비용
+  cpa: Number, // 가입까지 든 비용
+  roas: Number // 광고 대비 매출
+}
 const channelId = {
   cost: 0,
-  roas: 1,
+  convValue: 1,
   imp: 2,
   click: 3,
   cvr: 4,
-  convValue: 5,
+  roas: 5,
   ctr: 6,
   cpc: 7,
   cpa: 8,
@@ -13,7 +26,7 @@ const channelId = {
 export const barKeys = [['cost.kakao', 'cost.google', 'cost.naver', 'cost.facebook'],
   ['imp.kakao', 'imp.google', 'imp.naver', 'imp.facebook'],
   ['click.kakao', 'click.google', 'click.naver', 'click.facebook'],
-  ['roas.kakao', 'roas.google', 'roas.naver', 'roas.facebook'],
+  ['convValue.kakao', 'convValue.google', 'convValue.naver', 'convValue.facebook'],
   ['cvr.kakao', 'cvr.google', 'cvr.naver', 'cvr.facebook']
 ];
 export interface I_barColors {
@@ -34,7 +47,7 @@ export const channelName = {
   kakao:"카카오",
   google:"구글"
 }
-export const mediaReduce = (arrData:DailyMediaReport[],before:string,after:string) => {
+export const mediaChartReduce = (arrData:I_MediaData[],before:string,after:string) => {
     const startMonth = Number(before.split("-")[1]);
     const startDate = Number(before.split("-")[2]);
     const endDate = Number(after.split("-")[2]);
@@ -49,13 +62,13 @@ export const mediaReduce = (arrData:DailyMediaReport[],before:string,after:strin
               name:"광고비",
               total: obj[channelId.cost] === undefined ? val.cost : obj[channelId.cost].total + val.cost,
             },
-            obj[channelId.roas] = {
-              roas:{
-                [val.channel]:val.roas,
-                ...obj[channelId.roas]?.roas,
+            obj[channelId.convValue] = {
+              convValue:{
+                [val.channel]:val.convValue,
+                ...obj[channelId.convValue]?.convValue,
               },
               name:"매출",
-              total: obj[channelId.roas] === undefined ? val.roas : obj[channelId.roas].total + val.roas,
+              total: obj[channelId.convValue] === undefined ? val.convValue : obj[channelId.convValue].total + val.convValue,
             },
             obj[channelId.imp] = {
               imp:{
@@ -80,6 +93,90 @@ export const mediaReduce = (arrData:DailyMediaReport[],before:string,after:strin
               },
               name:"전환수",
               total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
+            }
+            if(count !== endDate) count = count + 1;
+          }
+          return obj
+    },[])
+}
+export const mediaTableReduce = (arrData:I_MediaData[],before:string,after:string) => {
+    const startMonth = Number(before.split("-")[1]);
+    const startDate = Number(before.split("-")[2]);
+    const endDate = Number(after.split("-")[2]);
+    let count = Number(startDate);
+    return arrData?.reduce((obj:any,val:any,i:number) => {
+        if(Number(val.date.split("-")[1]) === startMonth && Number(val.date.split("-")[2]) === count){
+            obj[channelId.cost] = {
+              cost:{
+                [val.channel]:val.cost,
+                ...obj[channelId.cost]?.cost,
+              },
+              name:"광고비",
+              total: obj[channelId.cost] === undefined ? val.cost : obj[channelId.cost].total + val.cost,
+            },
+            obj[channelId.convValue] = {
+              convValue:{
+                [val.channel]:val.convValue,
+                ...obj[channelId.convValue]?.convValue,
+              },
+              name:"매출",
+              total: obj[channelId.convValue] === undefined ? val.convValue : obj[channelId.convValue].total + val.convValue,
+            },
+            obj[channelId.imp] = {
+              imp:{
+                [val.channel]:val.imp,
+                ...obj[channelId.imp]?.imp,
+              },
+              name:"노출수",
+              total: obj[channelId.imp] === undefined ? val.imp : obj[channelId.imp].total + val.imp,
+            },
+            obj[channelId.click] = {
+              click:{
+                [val.channel]:val.click,
+                ...obj[channelId.click]?.click,
+              },
+              name:"클릭 수",
+              total: obj[channelId.click] === undefined ? val.click : obj[channelId.click].total + val.click,
+            },
+            obj[channelId.cvr] = {
+              cvr:{
+                [val.channel]:val.cvr,
+                ...obj[channelId.cvr]?.cvr,
+              },
+              name:"전환수",
+              total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
+            },
+            obj[channelId.roas] = {
+              roas:{
+                [val.channel]:val.roas,
+                ...obj[channelId.roas]?.roas,
+              },
+              name:"비용 대비 매출",
+              total: obj[channelId.roas] === undefined ? val.roas : obj[channelId.roas].total + val.roas,
+            },
+            obj[channelId.cpc] = {
+              cpc:{
+                [val.channel]:val.cpc,
+                ...obj[channelId.cpc]?.cpc,
+              },
+              name:"클릭 비용",
+              total: obj[channelId.cpc] === undefined ? val.cpc : obj[channelId.cpc].total + val.cpc,
+            },
+            obj[channelId.cpa] = {
+              cpa:{
+                [val.channel]:val.cpa,
+                ...obj[channelId.cpa]?.cpa,
+              },
+              name:"가입 비용",
+              total: obj[channelId.cpa] === undefined ? val.cpa : obj[channelId.cpa].total + val.cpa,
+            },
+            obj[channelId.ctr] = {
+              ctr:{
+                [val.channel]:val.ctr,
+                ...obj[channelId.ctr]?.ctr,
+              },
+              name:"노출 대비 클릭수",
+              total: obj[channelId.ctr] === undefined ? val.ctr : obj[channelId.ctr].total + val.ctr,
             }
             if(count !== endDate) count = count + 1;
           }

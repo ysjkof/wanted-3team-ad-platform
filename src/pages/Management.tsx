@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { theme } from '../theme';
+import { theme } from '../styles/theme';
 import styled from 'styled-components';
 import AdCardList from '../components/AdCardList';
+import useAdvertisingManagement from '../hook/useAdvertisingManagement';
 
 type AdType = 'web' | 'app';
 type Status = 'active' | 'ended';
@@ -92,6 +93,8 @@ const initAds: Ads = {
 export default function Management() {
   const [selectedStatus, setSelectedStatus] = useState<SelectedStatus>('all');
 
+  const { managementState } = useAdvertisingManagement();
+
   const filteredAds = initAds.ads.filter((ad) => (selectedStatus !== 'all' ? ad.status === selectedStatus : ad));
 
   const handleSelectedStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -100,6 +103,7 @@ export default function Management() {
   };
 
   const navigateToCreateAd = () => {};
+  console.log('managementState', managementState);
 
   return (
     <Container>

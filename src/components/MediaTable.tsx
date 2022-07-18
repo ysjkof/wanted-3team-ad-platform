@@ -1,15 +1,13 @@
 import styled from "styled-components"
-import { I_barColors } from "./MediaStatus";
+import { media } from "./mediaDataExample";
+import { mediaTableReduce } from "./MediaUtils";
 
 interface I_props {
-  mediaData:object[]
-  barColors:I_barColors
 }
-export default function MediaTable({mediaData,barColors}:I_props) {
-  console.log(mediaData);
-  // {mediaData.map((data:any)=>{
-  //             return <Li>{data.name}</Li>
-  //           })}
+export default function MediaTable() {
+  const beforeDate = "2022-02-01";
+  const afterDate = "2022-02-07"
+  const mediaTableData = mediaTableReduce(media,beforeDate,afterDate)
   return(
       <Table>
         <Channel>
@@ -22,18 +20,20 @@ export default function MediaTable({mediaData,barColors}:I_props) {
               <Li style={{textAlign:"left" , borderBottom:"1px solid #F5F6F7" , color:"#8190F7"}}>총계</Li>
             </Ul>
         </Channel>
-        {mediaData.map((data:any,index)=>{
+        {mediaTableData.map((data:any,index:number)=>{
           const dataKey:string = Object.keys(data).find(key => key)!;
           const itemKey:object = Object.keys(data[dataKey])
-          
-          
+          console.log("데이터보기",data.name , data.name.length);
           return(
-            <Item>
-              <Name>{data.name}</Name>
+            <Item id="1234" key={`${data}-${index}`} >
+              
+              
+              <Name style={{width: data.name.length > 6 && "6rem" }}>{data.name}</Name>
               {itemKey.map((item:string)=>{
-                return <Value>{data[dataKey][item]}</Value>
+                console.log(data[dataKey][item]);
+                return <Value>{Math.floor(data[dataKey][item]).toLocaleString('ko-KR')}</Value>
               })}
-              <Value style={{borderBottom:"1px solid #F5F6F7" , color:"#8190F7"}}>{data.total}</Value>
+              <Value style={{borderBottom:"1px solid #F5F6F7" , color:"#8190F7"}}>{Math.floor(data.total).toLocaleString('ko-KR')}</Value>
             </Item>
           )
         })}
@@ -45,20 +45,23 @@ export default function MediaTable({mediaData,barColors}:I_props) {
 const Table = styled.div`
   margin-top: 5rem;
   margin-left: 2.5rem;
-  width: 40.5rem;
-  height: 20rem;
+  margin-right: 0;
+  width: 90%;
+  height: 15rem;
   display: flex;
   font-size: 12px;
+  overflow-x: scroll;
 `;
 const Item = styled.div`
   text-align: right;
-  width: 7rem;
   font-weight: bold;
   border-top: 1px solid #F5F6F7;
 `;
 const Name = styled.div`
   display: flex;
+  width: 5rem;
   height: 2.2rem;
+  margin-left: 3rem;
   align-items: center;
   justify-content: right;
   color: #BCC4CC;

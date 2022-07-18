@@ -1,7 +1,4 @@
-export interface IntegrationStatus {
-  report: { daily: DailyIntegrationReport[] };
-}
-export interface DailyIntegrationReport {
+export interface DailyAdStatus {
   imp: number;
   click: number;
   cost: number;
@@ -15,7 +12,7 @@ export interface DailyIntegrationReport {
   date: string;
 }
 
-export interface DailyMediaReport {
+export interface DailyMediaStatus {
   channel: string;
   date: string;
   imp: number;
@@ -48,5 +45,5 @@ export interface Advertising {
   budget: number;
   adType: AdType;
   report?: AdvertisingReport;
-  endDate?: Date;
+  endDate?: Date | null;
 }
