@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { END_POINT_ADVERTISING_MANAGEMENT } from '../../constants/constants';
+import { DailyIntegrationReport } from '../../databaseTypes';
 import { CreateAdvertisingInpus, ModifyAdvertisingInpus } from '../../hook/useAdvertisingManagementQuery';
 
 export interface QueryOptions {
@@ -26,7 +27,7 @@ export class HttpRequest<T> {
 
   // endPoint를 BASE_URL에 설정하면 'http://localhost:8000/mediaReports/?date_gte... 이렇게 된다
   // 'http://localhost:8000/mediaReports?date_gte... 이렇게 되야 하기 때문에 endPoint를 따로 입력한다
-  async getBetween(options: QueryOptions): Promise<T> {
+  async getBetween(options: QueryOptions): Promise<DailyIntegrationReport[]> {
     const response = await this.service.get(this.createBetweenEndpoint(this.endPoint, options));
     return response.status === 200 && response.data;
   }
