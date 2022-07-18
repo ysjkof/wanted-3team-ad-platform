@@ -221,5 +221,5 @@ const ButtonContainer = styled.div`
 
 const ChartContainer = styled.div`
   width: 100%;
-  height: 50%;
+  height: 15rem;
 `;
