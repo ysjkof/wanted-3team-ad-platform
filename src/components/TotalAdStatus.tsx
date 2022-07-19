@@ -54,63 +54,74 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
 
   return (
     <Container>
-      <CardContainer>
-        {weeklyTotalData.map((data: singleDataCard) => (
-          <Card>
-            <dt>{data.name}</dt>
-            <div>
-              <dd className="value">{data.value}</dd>
-              <dd className="change">{data.change}</dd>
-            </div>
-          </Card>
-        ))}
-      </CardContainer>
-      <div>
-        <button>roas</button>
-        <button>click</button>
-      </div>
-      <ResponsiveContainer width="100%" height="60%">
-        <LineChart
-          width={500}
-          height={300}
-          data={newTotal}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="dateformat" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="roas" stroke="#8884d8" />
-          <Line type="monotone" dataKey="click" stroke="#82ca9d" />
-        </LineChart>
-      </ResponsiveContainer>
+      <h3>통합 광고 현황</h3>
+      <Wrap>
+        <CardContainer>
+          {weeklyTotalData.map((data: singleDataCard) => (
+            <Card>
+              <dt>{data.name}</dt>
+              <div>
+                <dd className="value">{data.value}</dd>
+                <dd className="change">{data.change}</dd>
+              </div>
+            </Card>
+          ))}
+        </CardContainer>
+        <ButtonContainer>
+          <button>roas</button>
+          <button>click</button>
+        </ButtonContainer>
+        <ChartContainer>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              width={500}
+              height={300}
+              data={newTotal}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="dateformat" />
+              <YAxis domain={[0, 1500]} />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="roas" stroke="#8884d8" />
+              <Line type="monotone" dataKey="click" stroke="#82ca9d" />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </Wrap>
     </Container>
   );
 }
-
 const Container = styled.div`
-  height: 30rem;
-  padding: 2rem;
+  width: 100%;
+`;
+const Wrap = styled.div`
+  margin: 1rem 0;
+  padding: 1rem;
   background-color: white;
-  border-radius: 2rem;
+  border-radius: 1rem;
 `;
 
 const CardContainer = styled.dl`
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+  }
 `;
+
 const Card = styled.div`
-  width: 12rem;
+  width: 30%;
   padding: 0.5rem 1rem;
   margin-bottom: 1rem;
-  border: 1px solid rgb(235, 235, 235);
+  border: 2px solid ${theme.borderColor};
   border-radius: 1rem;
   dt {
     font-size: 0.8rem;
@@ -122,7 +133,7 @@ const Card = styled.div`
     justify-content: space-between;
     align-items: flex-end;
     .value {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: ${theme.darkFontColor};
     }
@@ -132,4 +143,23 @@ const Card = styled.div`
       color: ${theme.lightFontColor};
     }
   }
+  @media (max-width: 480px) {
+    width: 100%;
+    margin-bottom: 0.2rem;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  margin-bottom: 1rem;
+  button {
+    padding: 0.4rem 0.8rem;
+    margin-right: 0.4rem;
+    background: transparent;
+    border: 2px solid ${theme.borderColor};
+  }
+`;
+
+const ChartContainer = styled.div`
+  width: 100%;
+  height: 15rem;
 `;
