@@ -23,7 +23,9 @@ time, mark, audio, video {
   font-family: 'Source Sans Pro', sans-serif;
 }
 body {
-
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
   &::-webkit-scrollbar {
     width: 15px;
 
