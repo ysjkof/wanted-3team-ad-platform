@@ -220,7 +220,7 @@ export const renderLegend = ({payload}:I_legendPayload) => {
 
 const LegendUl = styled.ul`
   display: flex;
-  font-size: 10px;
+  font-size: 12px;
   float: right;
   margin-top: 2rem;
 
@@ -234,8 +234,8 @@ const LegendLi = styled.li`
   margin-left: 1rem;
 `;
 const LegendCircle = styled.span`
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 5px;
 `;
 const LegendValue = styled.div``;
