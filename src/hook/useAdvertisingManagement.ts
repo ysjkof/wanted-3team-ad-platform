@@ -10,7 +10,7 @@ export interface ModifyAdvertisingInpus extends Partial<CreateAdvertisingInpus> 
 }
 
 function useAdvertisingManagement() {
-  const [managementState, setMenagementState] = useState<AdvertisingManagement | null>(null);
+  const [managementState, setMenagementState] = useState<AdvertisingManagement>({ count: 0, ads: [] });
   const [loading, setLoading] = useState(true);
 
   const getManagementState = async () => {
@@ -42,7 +42,7 @@ function useAdvertisingManagement() {
     getManagementState();
   }, []);
 
-  return { loading, managementState, createAdvertising, modifyAdversising, deleteAdversising };
+  return { loading, managementState, createAdvertising, modifyAdversising, deleteAdversising, getManagementState };
 }
 
 export default useAdvertisingManagement;
