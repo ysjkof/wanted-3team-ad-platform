@@ -12,6 +12,31 @@ interface I_MediaData {
   cpa: Number, // 가입까지 든 비용
   roas: Number // 광고 대비 매출
 }
+interface I_legendPayload {
+  color: string,
+  dataKey: string,
+  inactive: boolean,
+  payload: object,
+  type: string,
+  value: string,
+}
+export interface I_barColors {
+    kakao: string,
+    google: string,
+    naver: string,
+    facebook :string
+  }
+interface I_CustomToolTip {
+  position:{
+    x:number,
+    y:number
+  },
+  content:{
+    name:string,
+    value:number
+  }
+}
+
 const channelId = {
   cost: 0,
   convValue: 1,
@@ -29,12 +54,6 @@ export const barKeys = [['cost.kakao', 'cost.google', 'cost.naver', 'cost.facebo
   ['convValue.kakao', 'convValue.google', 'convValue.naver', 'convValue.facebook'],
   ['cvr.kakao', 'cvr.google', 'cvr.naver', 'cvr.facebook']
 ];
-export interface I_barColors {
-    kakao: string,
-    google: string,
-    naver: string,
-    facebook :string
-  }
 export const barColors:I_barColors = {
     kakao: "#f9E000",
     google: "#AC8AF8",
@@ -183,20 +202,29 @@ export const mediaTableReduce = (arrData:I_MediaData[],before:string,after:strin
           return obj
     },[])
 }
-export const toPercent = (tick:number) => {
+export const yAxisTickFormatter = (tick:number) => {
     const ticks:string[] = [];
     if(tick !== 0){
       ticks.push(`${tick * 100}%`)
     } 
-    return ticks;
+    return tick === 0 ? "" : `${tick * 100}%`;
   }
-interface I_legendPayload {
-  color: string,
-  dataKey: string,
-  inactive: boolean,
-  payload: object,
-  type: string,
-  value: string,
+export const CustomToolTip = ({position,content}:I_CustomToolTip) => {
+  const {x,y} = position || {};
+  const name:string = content.name.split(".")[1];
+  // style={{ left:`${(x-64)/16}rem`, top:`${y-50}px`, width:"8rem",height:"50px"}}
+  return(
+      <Tip
+      style={{ left:`${x}px`, top:`${y+8}px`}}
+      >
+        <span style={{fontSize:"12px",color:`${barColors[name]}`}}>{channelName[content.name.split(".")[1]]}</span>
+        <span>{content.value}</span>
+        <Speech>
+          <Bubble style={{ left:"40.3%", top:`${y-20}px`}} />
+        </Speech>
+
+      </Tip>
+  )
 }
 export const renderLegend = ({payload}:I_legendPayload) => {
   const result = payload.reduce((obj:any,val:I_legendPayload)=>{
@@ -239,3 +267,29 @@ const LegendCircle = styled.span`
   border-radius: 5px;
 `;
 const LegendValue = styled.div``;
+const Tip = styled.div`
+  position: absolute;
+  display: flex;
+  padding: 0.3rem;
+  flex-direction: column;
+  border-radius: 5px;
+  background-color: #39474E;
+  width: 7rem;
+  height: 2.8rem;
+  z-index: 2;
+  span{
+    color: #fff;
+    text-align: center;
+  }
+`;
+const Speech = styled.div`
+  position: relative;
+`;
+const Bubble = styled.div`
+  position: absolute;
+  content: '';
+  border-width: 15px 10px 10px 10px;
+  border-style: solid;
+  border-radius: 6px;
+  border-color: #39474E transparent transparent transparent;
+`;

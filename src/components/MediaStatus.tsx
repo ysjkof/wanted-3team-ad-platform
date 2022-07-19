@@ -4,8 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer
 import { useState } from "react";
 import { DailyMediaReport } from "../databaseTypes";
 import MediaTable from "./MediaTable";
-import { barColors, barKeys, channelName, mediaChartReduce, renderLegend, toPercent } from "./MediaUtils";
-// import CustomToolTip from "./ToolTip";
+import { barColors, barKeys, channelName, CustomToolTip, mediaChartReduce, renderLegend, xAxisTickFormatter ,yAxisTickFormatter } from "./MediaUtils";
 
 interface I_customToolTip {
   show:boolean,
@@ -24,31 +23,7 @@ export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
   const afterDate = "2022-02-07"
   const [tooltip, setToolTip] = useState<I_customToolTip>();
   const mediaData = mediaChartReduce(media,beforeDate,afterDate)
-  const BarWithBorder = (borderHeight: number, borderColor: string) => {
-  return (props: any) => {
-    const { fill, x, y, width, height } = props;
-    return (
-      <g>
-        <rect
-          x={x}
-          y={y}
-          width={width}
-          height={height}
-          stroke="none"
-          fill={fill}
-        />
-        <rect
-          x={x}
-          y={y}
-          width={width}
-          height={borderHeight}
-          stroke="none"
-          fill={borderColor}
-        />
-      </g>
-    );
-  };
-};
+
 const showTooltip = (data:any , i:any , event:any) => {
   const name:string = data.tooltipPayload[0].dataKey;
   const value = data.tooltipPayload[0].payload[name.split(".")[0]][name.split(".")[1]];
@@ -59,42 +34,14 @@ const showTooltip = (data:any , i:any , event:any) => {
     content: {name:data.tooltipPayload[0].dataKey,value: Number.isInteger(value) ? value : value.toFixed(2)}
   })
 }
-const leaveTooltip = (props) => {
-  console.log("리브리브 !!" , props);
+const leaveTooltip = () => {
   setToolTip({
     show:false,
     position: {x:0,y:0},
     content: {name:"",value:""}
   })
 }
-interface I_CustomToolTip {
-  position:{
-    x:number,
-    y:number
-  },
-  content:{
-    name:string,
-    value:number
-  }
-}
-const CustomToolTip = ({position,content}:I_CustomToolTip) => {
-  const {x,y} = position || {};
-  const name:string = content.name.split(".")[1];
-  // style={{ left:`${(x-64)/16}rem`, top:`${y-50}px`, width:"8rem",height:"50px"}}
-  return(
-      <Tip
-      style={{ left:`${x}px`, top:`${y+8}px`}}
-      >
-        <span style={{fontSize:"12px",color:`${barColors[name]}`}}>{channelName[content.name.split(".")[1]]}</span>
-        <span>{content.value}</span>
-        <Speech>
-          <Bubble style={{ left:"40%", top:`${y-20}px`}} />
-        </Speech>
 
-      </Tip>
-  )
-  // 
-}
 
 
   return (
@@ -105,7 +52,7 @@ const CustomToolTip = ({position,content}:I_CustomToolTip) => {
       <ResponsiveContainer width="100%" height="100%">
           <BarChart
             width={500}
-            height={300}
+            height={700}
             stackOffset="expand"
             data={mediaData}
             margin={{
@@ -114,12 +61,12 @@ const CustomToolTip = ({position,content}:I_CustomToolTip) => {
               left: 20,
               bottom: 5,
             }}
-            barSize={30}
+            barSize={28}
           >
           <Legend content={renderLegend} />
           <CartesianGrid  horizontal={true} vertical={false} dx={-200} stroke="#E6E7E8"/>
-          <XAxis dataKey="name" stroke="#E6E7E8" tick={{dy:10,fontSize:"12px" , stroke:"#c5cace" , fontWeight:"0"}} tickLine={false} />
-          <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} style={{textAlign:"left"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
+          <XAxis dataKey="name" stroke="#E6E7E8" dy={10} tick={{ fontSize:"12px" , stroke:"#c5cace" , fontFamily:'Nanum Gothic' }} tickLine={false}  />
+          <YAxis tick={{dy:10 ,dx:32,fontSize:"12px"  }} tickLine={{stroke:"#E6E7E8"}} style={{textAlign:"left"}} tickSize={40} tickCount={6} tickFormatter={yAxisTickFormatter} axisLine={false}   />
           {barKeys[0].map((key:any)=>{
             const bars = [];
             bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} onMouseLeave={leaveTooltip} />)
@@ -151,7 +98,7 @@ const CustomToolTip = ({position,content}:I_CustomToolTip) => {
       {/* {tooltip?.show && (
                 <CustomToolTip {...tooltip} />
               )} */}
-      <MediaTable mediaData={mediaData} barColors={barColors}/>
+      <MediaTable />
       {tooltip?.show && <CustomToolTip {...tooltip} />}
     </Wrap>
     
@@ -176,37 +123,10 @@ const Wrap = styled.div`
 `;
 const Chart = styled.div`
   width: 100%;
-  height: 20rem;
+  height: 24rem;
   margin: 0 auto;
   padding-top:4rem;
 `;
-const Tip = styled.div`
-  position: absolute;
-  display: flex;
-  padding: 0.3rem;
-  flex-direction: column;
-  border-radius: 5px;
-  background-color: #39474E;
-  width: 7rem;
-  height: 2.8rem;
-  z-index: 2;
-  span{
-    color: #fff;
-    text-align: center;
-  }
-`;
-const Name = styled.span``
-const Value = styled.span``
-const Speech = styled.div`
-  position: relative;
-`;
-const Bubble = styled.div`
-  position: absolute;
-  content: '';
-  border-width: 15px 10px 10px 10px;
-  border-style: solid;
-  border-radius: 6px;
-  border-color: #39474E transparent transparent transparent;
-`;
+
 
 /*  */
