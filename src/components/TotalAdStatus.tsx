@@ -15,8 +15,6 @@ interface TotalReport {
   convValue: number;
 }
 
-type WeekArr = DailyAdStatus[];
-
 type singleDataCard = { name: string; value: string; change: string };
 
 type WeeklyTotalData = singleDataCard[];
@@ -35,16 +33,16 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
   //props 받기 전 임의로 날짜 넣은 코드
   const { loading, totalAdStatus } = useTotalAdStatus({
     gte: new Date('2022-03-01'),
-    lte: new Date('2022-03-14'),
+    lte: new Date('2022-03-07'),
   });
 
-  const [prevWeek, setPrevWeek] = useState<WeekArr>();
-  const [currWeek, setCurrWeek] = useState<WeekArr>();
+  const [prevWeek, setPrevWeek] = useState<DailyAdStatus[]>();
+  const [currWeek, setCurrWeek] = useState<DailyAdStatus[]>();
 
   useEffect(() => {
-    const prev = totalAdStatus?.slice(0, 7);
-    const curr = totalAdStatus?.slice(7, 14);
-    setPrevWeek(prev);
+    const prev = totalAdStatus?.prev;
+    const curr = totalAdStatus?.curr;
+    if (prev) setPrevWeek(prev);
     setCurrWeek(curr);
   }, [totalAdStatus]);
 
@@ -54,7 +52,7 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
     return { ...data, dateformat: dateString };
   });
 
-  const getWeekTotalData = (weekData: WeekArr): TotalReport => {
+  const getWeekTotalData = (weekData: DailyAdStatus[]): TotalReport => {
     const WeekTotalData = weekData.reduce(
       (prev, cur) => {
         for (const key in prev) {

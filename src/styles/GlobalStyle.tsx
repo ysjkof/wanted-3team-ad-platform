@@ -27,6 +27,7 @@ body {
   height: 100vh;
   margin: 0;
   overflow: hidden;
+  overscroll-behavior: none;
   &::-webkit-scrollbar {
     width: 15px;
 
