@@ -1,15 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { QueryOptions } from '../api/httpRequest';
 import { DailyAdStatus } from '../interfaces/database';
 import totalAdStatusModel from '../models/totalAdStatusModel';
+import { useCache } from './useCache';
 
 function useTotalAdStatus(queryOptions: QueryOptions) {
   const [totalAdStatus, setTotalAdStatus] = useState<DailyAdStatus[]>();
   const [loading, setLoading] = useState(true);
+  const { returnDataIfExistInCache, saveInCacheAndReturnData } = useCache<DailyAdStatus[]>();
 
   const getTotalAdStatus = async (queryOptions: QueryOptions) => {
     setLoading(true);
-    setTotalAdStatus((await totalAdStatusModel.getPeriod(queryOptions)) || []);
+    setTotalAdStatus(
+      returnDataIfExistInCache(queryOptions) ||
+        saveInCacheAndReturnData(queryOptions, await totalAdStatusModel.getPeriod(queryOptions)),
+    );
     setLoading(false);
   };
 
