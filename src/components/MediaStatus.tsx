@@ -172,6 +172,7 @@ const Wrap = styled.div`
   margin: 0 auto;
   background-color: white;
   border-radius: 15px;
+  
 `;
 const Chart = styled.div`
   width: 100%;
