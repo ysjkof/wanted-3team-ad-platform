@@ -23,15 +23,11 @@ export default function MediaTable() {
         {mediaTableData.map((data:any,index:number)=>{
           const dataKey:string = Object.keys(data).find(key => key)!;
           const itemKey:object = Object.keys(data[dataKey])
-          console.log("데이터보기",data.name , data.name.length);
           return(
             <Item id="1234" key={`${data}-${index}`} >
-              
-              
               <Name style={{width: data.name.length > 6 && "6rem" }}>{data.name}</Name>
-              {itemKey.map((item:string)=>{
-                console.log(data[dataKey][item]);
-                return <Value>{Math.floor(data[dataKey][item]).toLocaleString('ko-KR')}</Value>
+              {itemKey.map((item:string,itemIndex:number)=>{
+                return <Value key={`${item}+${itemIndex}`}>{Math.floor(data[dataKey][item]).toLocaleString('ko-KR')}</Value>
               })}
               <Value style={{borderBottom:"1px solid #F5F6F7" , color:"#8190F7"}}>{Math.floor(data.total).toLocaleString('ko-KR')}</Value>
             </Item>

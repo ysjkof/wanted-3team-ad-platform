@@ -20,7 +20,6 @@ type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
 type TotalAdStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
 
 export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
-  console.log("페리오드",selectedPeriod);
   const beforeDate = "2022-02-01";
   const afterDate = "2022-02-07"
   const [tooltip, setToolTip] = useState<I_customToolTip>();
@@ -65,10 +64,13 @@ const Content = ({name , value}:any) => {
   )
 }
 const showTooltip = (data:any , i:any , event:any) => {
+  console.log("커스텀",data,i,event);
+  
   const value = data[data.tooltipPayload[0].dataKey]
+  // {x:event.clientX,y:event.clientY}
   setToolTip({
     show:true,
-    position: {x:event.clientX,y:event.clientY},
+    position: {x:data.x,y:30},
     content: <Content name={data.tooltipPayload[0].dataKey} value={value} />
   })
 }
@@ -82,21 +84,20 @@ const leaveTooltip = () => {
 type T_Position = {x:number,y:number}
 const CustomToolTip = ({position,content}:any) => {
   const {x,y} = position || {};
-  console.log("포지션",content);
-  
+  // style={{ left:`${(x-64)/16}rem`, top:`${y-50}px`, width:"8rem",height:"50px"}}
   return(
-    <div
-    style={{ left:"x", top:"y", width:"50px",height:"50px",backgroundColor:"blueviolet" }}
+    <Tip
+    style={{ left:`${x-64}px`, top:`${y}px`, width:"8rem",height:"50px"}}
     >
       {content}
-    </div>
+    </Tip>
   )
 }
-// const CustomToolTip = ({ active, payload, label }) => {
-//   // console.log("액티브",active);
-//   // console.log("페이로드",payload);
-//   // console.log("라벨",label);
-// }
+const CToolTip = ({ active, payload, label }) => {
+  console.log("액티브",active);
+  console.log("페이로드",payload);
+  console.log("라벨",label);
+}
 
 
   return (
@@ -124,27 +125,27 @@ const CustomToolTip = ({position,content}:any) => {
           <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} style={{textAlign:"left"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
           {barKeys[0].map((key:any)=>{
             const bars = [];
-            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]}  radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} />)
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]}  radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>)
             return bars;
           })}
           {barKeys[1].map((key)=>{
             const bars = [];
-            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip}/>)
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>)
             return bars;
           })}
           {barKeys[2].map((key)=>{
             const bars = [];
-            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip}/>)
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>)
             return bars;
           })}
           {barKeys[3].map((key)=>{
             const bars = [];
-            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip}/>)
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} onMouseLeave={leaveTooltip} />)
             return bars;
           })}
           {barKeys[4].map((key)=>{
             const bars = [];
-            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" && [5,5,0,0]} onMouseOver={showTooltip}/>)
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" && [5,5,0,0]} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>)
             return bars;
           })}
             </BarChart>
@@ -154,8 +155,9 @@ const CustomToolTip = ({position,content}:any) => {
                 <CustomToolTip {...tooltip} />
               )} */}
       <MediaTable mediaData={mediaData} barColors={barColors}/>
+      {tooltip?.show && <CustomToolTip {...tooltip}/>}
     </Wrap>
-    {tooltip?.show && <CustomToolTip {...tooltip}/>}
+    
   </Container>
 )
         }
@@ -169,6 +171,7 @@ const Container = styled.div`
   height: 100%;
 `;
 const Wrap = styled.div`
+  position: relative;
   margin: 0 auto;
   background-color: white;
   border-radius: 15px;
@@ -178,4 +181,12 @@ const Chart = styled.div`
   height: 20rem;
   margin: 0 auto;
   padding-top:4rem;
+`;
+const Tip = styled.div`
+  position: absolute;
+  border-radius: 15px;
+  /* color: #fff; */
+  /* background-color: #39474E; */
+  background-color: aliceblue;
+  
 `;

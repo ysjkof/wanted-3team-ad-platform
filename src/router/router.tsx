@@ -10,9 +10,9 @@ function Router() {
     <BrowserRouter>
       <Routes>
         <Route path="" element={<Layout />}>
-          <Route index element={<Dashboard />} />
+          <Route index element={<MediaStatus />} />
           <Route path="management" element={<Management />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<MediaStatus />} />
           <Route path="*" element={<div>페이지가 없습니다</div>} />
         </Route>
         <Route path="/test" element={<Test />} />
