@@ -1,22 +1,18 @@
 import styled from 'styled-components';
-import { Ad } from '../pages/Management';
+import { Advertising } from '../interfaces/database';
+import { HandleDeleteClick } from '../pages/Management';
 import AdCard from './AdCard';
 
 interface Props {
-  ads: Ad[];
+  ads: Advertising[];
+  handleDeleteClick: HandleDeleteClick;
 }
 
-export default function AdCardList({ ads }: Props) {
+export default function AdCardList({ ads, handleDeleteClick }: Props) {
   return (
     <Container>
       {ads.map((ad) => {
-        return <AdCard key={ad.id} Content={ad} />;
-      })}
-      {ads.map((ad) => {
-        return <AdCard key={ad.id} Content={ad} />;
-      })}
-      {ads.map((ad) => {
-        return <AdCard key={ad.id} Content={ad} />;
+        return <AdCard key={ad.id} Content={ad} handleDeleteClick={handleDeleteClick} />;
       })}
     </Container>
   );

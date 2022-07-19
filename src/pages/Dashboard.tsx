@@ -133,7 +133,6 @@ const DateSelectorsContainer = styled.div`
   display: flex;
   align-items: center;
   background-color: inherit;
-
   * {
     margin-left: 1rem;
     height: 100%;
