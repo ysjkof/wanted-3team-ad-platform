@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer
 import { useState } from "react";
 import { DailyMediaReport } from "../databaseTypes";
 import MediaTable from "./MediaTable";
-import { barColors, barKeys, mediaChartReduce, renderLegend, toPercent } from "./MediaUtils";
+import { barColors, barKeys, channelName, mediaChartReduce, renderLegend, toPercent } from "./MediaUtils";
 // import CustomToolTip from "./ToolTip";
 
 interface I_customToolTip {
@@ -24,11 +24,6 @@ export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
   const afterDate = "2022-02-07"
   const [tooltip, setToolTip] = useState<I_customToolTip>();
   const mediaData = mediaChartReduce(media,beforeDate,afterDate)
-  
-  console.log("데이터",mediaData);
-
-
-
   const BarWithBorder = (borderHeight: number, borderColor: string) => {
   return (props: any) => {
     const { fill, x, y, width, height } = props;
@@ -54,49 +49,51 @@ export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
     );
   };
 };
-const Content = ({name , value}:any) => {
-  return(
-    <div>
-      <span>{name}</span>
-      <br />
-      <span>{value}</span>
-    </div>
-  )
-}
 const showTooltip = (data:any , i:any , event:any) => {
-  console.log("커스텀",data,i,event);
-  
-  const value = data[data.tooltipPayload[0].dataKey]
-  // {x:event.clientX,y:event.clientY}
+  const name:string = data.tooltipPayload[0].dataKey;
+  const value = data.tooltipPayload[0].payload[name.split(".")[0]][name.split(".")[1]];
+
   setToolTip({
     show:true,
-    position: {x:data.x,y:30},
-    content: <Content name={data.tooltipPayload[0].dataKey} value={value} />
+    position: {x:data.tooltipPosition.x-56,y:data.background.y},
+    content: {name:data.tooltipPayload[0].dataKey,value: Number.isInteger(value) ? value : value.toFixed(2)}
   })
 }
-const leaveTooltip = () => {
-    setToolTip({
+const leaveTooltip = (props) => {
+  console.log("리브리브 !!" , props);
+  setToolTip({
     show:false,
     position: {x:0,y:0},
-    content: "hi"
+    content: {name:"",value:""}
   })
 }
-type T_Position = {x:number,y:number}
-const CustomToolTip = ({position,content}:any) => {
+interface I_CustomToolTip {
+  position:{
+    x:number,
+    y:number
+  },
+  content:{
+    name:string,
+    value:number
+  }
+}
+const CustomToolTip = ({position,content}:I_CustomToolTip) => {
   const {x,y} = position || {};
+  const name:string = content.name.split(".")[1];
   // style={{ left:`${(x-64)/16}rem`, top:`${y-50}px`, width:"8rem",height:"50px"}}
   return(
-    <Tip
-    style={{ left:`${x-64}px`, top:`${y}px`, width:"8rem",height:"50px"}}
-    >
-      {content}
-    </Tip>
+      <Tip
+      style={{ left:`${x}px`, top:`${y+8}px`}}
+      >
+        <span style={{fontSize:"12px",color:`${barColors[name]}`}}>{channelName[content.name.split(".")[1]]}</span>
+        <span>{content.value}</span>
+        <Speech>
+          <Bubble style={{ left:"40%", top:`${y-20}px`}} />
+        </Speech>
+
+      </Tip>
   )
-}
-const CToolTip = ({ active, payload, label }) => {
-  console.log("액티브",active);
-  console.log("페이로드",payload);
-  console.log("라벨",label);
+  // 
 }
 
 
@@ -125,7 +122,7 @@ const CToolTip = ({ active, payload, label }) => {
           <YAxis tick={{dy:10 ,dx:35,fontSize:"14px"  }} tickLine={{stroke:"#E6E7E8"}} style={{textAlign:"left"}} tickSize={40} tickCount={6} tickFormatter={toPercent} axisLine={false}   />
           {barKeys[0].map((key:any)=>{
             const bars = [];
-            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]}  radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} onMouseLeave={leaveTooltip}/>)
+            bars.push(<Bar dataKey={key} stackId="key" fill={barColors[key.split(".")[1]]} radius={key.split(".")[1] === "facebook" ? [5,5,0,0] : null} onMouseOver={showTooltip} onMouseLeave={leaveTooltip} />)
             return bars;
           })}
           {barKeys[1].map((key)=>{
@@ -155,7 +152,7 @@ const CToolTip = ({ active, payload, label }) => {
                 <CustomToolTip {...tooltip} />
               )} */}
       <MediaTable mediaData={mediaData} barColors={barColors}/>
-      {tooltip?.show && <CustomToolTip {...tooltip}/>}
+      {tooltip?.show && <CustomToolTip {...tooltip} />}
     </Wrap>
     
   </Container>
@@ -184,9 +181,31 @@ const Chart = styled.div`
 `;
 const Tip = styled.div`
   position: absolute;
-  border-radius: 15px;
-  /* color: #fff; */
-  /* background-color: #39474E; */
-  background-color: aliceblue;
-  
+  display: flex;
+  padding: 0.3rem;
+  flex-direction: column;
+  border-radius: 5px;
+  background-color: #39474E;
+  width: 7rem;
+  height: 2.8rem;
+  z-index: 2;
+  span{
+    color: #fff;
+    text-align: center;
+  }
 `;
+const Name = styled.span``
+const Value = styled.span``
+const Speech = styled.div`
+  position: relative;
+`;
+const Bubble = styled.div`
+  position: absolute;
+  content: '';
+  border-width: 15px 10px 10px 10px;
+  border-style: solid;
+  border-radius: 6px;
+  border-color: #39474E transparent transparent transparent;
+`;
+
+/*  */
