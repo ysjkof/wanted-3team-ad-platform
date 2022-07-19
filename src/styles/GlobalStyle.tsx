@@ -19,6 +19,7 @@ time, mark, audio, video {
   margin: 0;
   padding: 0;
   border: 0;
+  list-style:none;
   color: ${theme.darkFontColor};
   font-family: 'Source Sans Pro', sans-serif;
 }
