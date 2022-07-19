@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Total } from './TotalDataExample';
 import { DailyAdStatus } from '../interfaces/database';
 import useTotalAdStatus from '../hook/useTotalAdStatus';
 import { useState, useEffect } from 'react';
@@ -25,37 +24,29 @@ type StartAndEndDate = { startDate: Date; endDate: Date };
 type TotalAdStatusProps = { selectedPeriod: StartAndEndDate };
 
 export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
-  // ** prps 받은 후 활성화 할 코드
-  // selectedPeriod.startDate.setDate(selectedPeriod.startDate.getDate()-7);
-  // const { loading, totalAdStatus } = useTotalAdStatus({
-  //   gte: selectedPeriod.startDate,
-  //   lte: selectedPeriod.endDate,
-  // });
-
-  //props 받기 전 임의로 날짜 넣은 코드
-  const { loading, totalAdStatus } = useTotalAdStatus({
-    gte: new Date('2022-03-01'),
-    lte: new Date('2022-03-14'),
-  });
-
-  const [prevWeek, setPrevWeek] = useState<WeekArr>();
+  const [prevWeek, setPrevWeek] = useState<WeekArr | null>();
   const [currWeek, setCurrWeek] = useState<WeekArr>();
 
-  useEffect(() => {
-    const prev = totalAdStatus?.slice(0, 7);
-    const curr = totalAdStatus?.slice(7, 14);
-    setPrevWeek(prev);
-    setCurrWeek(curr);
-  }, [totalAdStatus]);
+  const { loading, totalAdStatus, getTotalAdStatus } = useTotalAdStatus();
 
-  const newTotal = Total.map((data) => {
+  useEffect(() => {
+    getTotalAdStatus({
+      gte: selectedPeriod.startDate,
+      lte: selectedPeriod.endDate,
+    });
+    setPrevWeek(totalAdStatus?.prev);
+    setCurrWeek(totalAdStatus?.curr);
+    console.log(totalAdStatus, selectedPeriod.startDate, selectedPeriod.endDate);
+  }, [selectedPeriod, loading]);
+
+  const newTotal = currWeek?.map((data) => {
     const date = new Date(data.date);
     const dateString = `${date.getMonth() + 1}월 ${date.getDate()}일`;
     return { ...data, dateformat: dateString };
   });
 
-  const getWeekTotalData = (weekData: WeekArr): TotalReport => {
-    const WeekTotalData = weekData.reduce(
+  const getWeekTotalData = (weekData: WeekArr | null | undefined): TotalReport => {
+    const WeekTotalData = weekData?.reduce(
       (prev, cur) => {
         for (const key in prev) {
           prev[key as keyof typeof prev] = prev[key as keyof typeof prev] + cur[key as keyof typeof prev];
@@ -71,8 +62,18 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
         convValue: 0,
       },
     );
-    WeekTotalData.roas = Math.round(WeekTotalData.roas / 7);
-    return WeekTotalData;
+    if (WeekTotalData && weekData) {
+      WeekTotalData.roas = Math.round(WeekTotalData.roas / weekData.length);
+      return WeekTotalData;
+    } else
+      return {
+        roas: NaN,
+        cost: NaN,
+        imp: NaN,
+        click: NaN,
+        conv: NaN,
+        convValue: NaN,
+      };
   };
 
   const getWeeklyChange = (prev: TotalReport, curr: TotalReport): TotalReport => {
@@ -83,10 +84,9 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
     return result;
   };
 
-  const currWeekTotalData = currWeek && getWeekTotalData(currWeek);
-  const prevWeekTotalData = prevWeek && getWeekTotalData(prevWeek);
-  const changeOfWeekTotalData =
-    prevWeekTotalData && currWeekTotalData && getWeeklyChange(prevWeekTotalData, currWeekTotalData);
+  const currWeekTotalData = getWeekTotalData(currWeek);
+  const prevWeekTotalData = getWeekTotalData(prevWeek);
+  const changeOfWeekTotalData = getWeeklyChange(prevWeekTotalData, currWeekTotalData);
 
   const weeklyData: WeeklyTotalData = [
     {
