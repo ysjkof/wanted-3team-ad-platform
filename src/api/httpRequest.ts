@@ -14,7 +14,7 @@ export class HttpRequest<T> {
   private readonly removeTimeInDate = (date: Date) => date.toISOString().substring(0, 10);
   private readonly operateError = (error: any) => {
     if (error.response) {
-      throw new Error(`2xx가 아닌 상태코드 ${error.response.status}로 응답했습니다 : `, error);
+      throw new Error(`2xx가 아닌 상태코드로 응답했습니다. 상태코드는 < ${error.response.status} > 입니다 : `, error);
     } else if (error.request) {
       throw new Error(`요청이 전송됐지만 응답이 수신되지 않습니다 : `, error);
     } else {
