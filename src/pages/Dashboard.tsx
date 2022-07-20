@@ -149,7 +149,6 @@ const DateSelectorsContainer = styled.div`
   }
   @media (max-width: 480px) {
     width: 100%;
-
     * {
       font-size: 0.8rem;
       margin-left: 0;
