@@ -13,6 +13,8 @@ import {
   renderLegend,
   yAxisTickFormatter,
 } from './MediaUtils';
+import useMediaStatus from "../hook/useMediaStatus";
+
 
 interface I_customToolTip {
   show: boolean;
@@ -22,17 +24,24 @@ interface I_customToolTip {
   };
   content: any;
 }
-
+type PeriodDate = {prev: Date, curr: Date}
 type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
 type MediaStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
 
 export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
-  const beforeDate = '2022-02-01';
-  const afterDate = '2022-02-07';
+  const [period,setPeriod] = useState<PeriodDate>({});
   const [tooltip, setToolTip] = useState<I_customToolTip>();
-  const mediaData = mediaChartReduce(media, beforeDate, afterDate);
-
-  const showTooltip = (data: any, i: any, event: any) => {
+  const { loading, mediaStatus, getMediaStatus } = useMediaStatus();
+  
+  useEffect(()=>{
+  getMediaStatus({
+      gte:selectedPeriod?.startDate,
+      lte:selectedPeriod?.endDate
+    })
+  },[selectedPeriod])
+  const mediaData = mediaChartReduce(mediaStatus);
+  
+  const showTooltip = (data: any) => {
     const name: string = data.tooltipPayload[0].dataKey;
     const value = data.tooltipPayload[0].payload[name.split('.')[0]][name.split('.')[1]];
 
@@ -49,6 +58,10 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
       content: { name: '', value: '' },
     });
   };
+
+  if(loading){
+    return <div></div>
+  }
 
   return (
     <Container>
@@ -97,7 +110,6 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' ? [5, 5, 0, 0] : null}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -111,7 +123,6 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' ? [5, 5, 0, 0] : null}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -125,7 +136,6 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' ? [5, 5, 0, 0] : null}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -139,7 +149,6 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' ? [5, 5, 0, 0] : null}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -153,7 +162,6 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' && [5, 5, 0, 0]}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -164,7 +172,7 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
         {/* {tooltip?.show && (
                 <CustomToolTip {...tooltip} />
               )} */}
-        <MediaTable />
+        <MediaTable mediaStatus={mediaStatus} />
         {tooltip?.show && <CustomToolTip {...tooltip} />}
       </Wrap>
     </Container>

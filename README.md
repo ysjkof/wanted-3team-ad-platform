@@ -70,7 +70,7 @@ interface QueryOption {
 
 **광고관리**와 관련된 기능
 
-훅을 실행하면 `{ loading, managementState, createAdvertising, modifyAdversising, deleteAdversising }` 5개 값을 가진 객체를 반환한다.
+훅을 실행하면 `{ loading, managementState, createAdvertising, modifyAdversising, deleteAdversising, getManagementState }` 5개 값을 가진 객체를 반환한다.
 
 - managementState
 
@@ -96,11 +96,15 @@ interface QueryOption {
   | ---- | -------- |
   | 필수 | id       |
 
+- getManagementState
+
+  managementState을 다시 요청한다.
+
 - 사용 예시
 
 ```ts
 // 광고 만들기
-const { createAdvertising, modifyAdversising, deleteAdversising } = useAdvertisingManagementQuery();
+const { createAdvertising, modifyAdversising, deleteAdversising, getManagementState } = useAdvertisingManagementQuery();
 createAdvertising({
   adType: 'web',
   budget: 2384710982,
@@ -119,4 +123,7 @@ modifyAdversising({
 
 // 광고 삭제
 deleteAdversising(5); // 광고 id만 전달한다
+
+// 광고 목록 다시 요청
+getManagementState();
 ```
