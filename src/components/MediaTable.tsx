@@ -1,41 +1,45 @@
-import styled from "styled-components"
-import { DailyMediaStatus } from "../interfaces/database";
-import { mediaTableReduce } from "./MediaUtils";
+import styled from 'styled-components';
+import { DailyMediaStatus } from '../interfaces/database';
+import { mediaTableReduce } from './MediaUtils';
 interface I_Props {
-  mediaStatus:DailyMediaStatus
+  mediaStatus: DailyMediaStatus[];
 }
-export default function MediaTable({mediaStatus}:I_Props) {
+export default function MediaTable({ mediaStatus }: I_Props) {
   const mediaTableData = mediaTableReduce(mediaStatus);
-  return(
-      <Table>
-        <Wrap>
-          <Channel>
-            <Ul style={{flexDirection:"column"}}>
-              <Li></Li>
-              <Li>페이스북</Li>
-              <Li>네이버</Li>
-              <Li>구글</Li>
-              <Li>카카오</Li>
-              <Li style={{borderBottom:"1px solid #F5F6F7" , color:"#8190F7"}}>총계</Li>
-            </Ul>
-          </Channel>
-          {mediaTableData?.map((data:any,index:number)=>{
-            const dataKey:string = Object.keys(data).find(key => key)!;
-            const itemKey:object = Object.keys(data[dataKey])
-            return(
-              <Item id="1234" key={`${data}-${index}`} >
-                <Name dataName={data.name}>{data.name}</Name>
-                {itemKey.map((item:string,itemIndex:number)=>{
-                  return <Value key={`${item}+${itemIndex}`}>{Math.floor(data[dataKey][item]).toLocaleString('ko-KR')}</Value>
-                })}
-                <Value style={{borderBottom:"1px solid #F5F6F7" , color:"#8190F7"}}>{Math.floor(data.total).toLocaleString('ko-KR')}</Value>
-              </Item>
-            )
-          })}
-            <Gradient className="GRADIENT" />
-        </Wrap>
-      </Table>
-  )
+  return (
+    <Table>
+      <Wrap>
+        <Channel>
+          <Ul style={{ flexDirection: 'column' }}>
+            <Li></Li>
+            <Li>페이스북</Li>
+            <Li>네이버</Li>
+            <Li>구글</Li>
+            <Li>카카오</Li>
+            <Li style={{ borderBottom: '1px solid #F5F6F7', color: '#8190F7' }}>총계</Li>
+          </Ul>
+        </Channel>
+        {mediaTableData?.map((data: any, index: number) => {
+          const dataKey: string = Object.keys(data).find((key) => key)!;
+          const itemKey: object = Object.keys(data[dataKey]);
+          return (
+            <Item id="1234" key={`${data}-${index}`}>
+              <Name dataName={data.name}>{data.name}</Name>
+              {itemKey.map((item: string, itemIndex: number) => {
+                return (
+                  <Value key={`${item}+${itemIndex}`}>{Math.floor(data[dataKey][item]).toLocaleString('ko-KR')}</Value>
+                );
+              })}
+              <Value style={{ borderBottom: '1px solid #F5F6F7', color: '#8190F7' }}>
+                {Math.floor(data.total).toLocaleString('ko-KR')}
+              </Value>
+            </Item>
+          );
+        })}
+        <Gradient className="GRADIENT" />
+      </Wrap>
+    </Table>
+  );
 }
 
 const Table = styled.div`

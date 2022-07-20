@@ -3,7 +3,7 @@ import { theme } from '../styles/theme';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DailyAdStatus } from '../interfaces/database';
 import useTotalAdStatus from '../hook/useTotalAdStatus';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 interface TotalReport {
   roas: number;
@@ -123,8 +123,8 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
       <h3>통합 광고 현황</h3>
       <Wrap>
         <CardContainer>
-          {weeklyData.map((data: singleDataCard) => (
-            <Card>
+          {weeklyData.map((data: singleDataCard, idx) => (
+            <Card key={idx}>
               <dt>{data.name}</dt>
               <div>
                 <dd className="value">{data.value}</dd>

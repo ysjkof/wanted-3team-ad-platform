@@ -1,20 +1,9 @@
 import styled from 'styled-components';
-import { media } from './mediaDataExample';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip } from 'recharts';
-import { useState } from 'react';
-import { DailyMediaReport } from '../databaseTypes';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import { useEffect, useState } from 'react';
 import MediaTable from './MediaTable';
-import {
-  barColors,
-  barKeys,
-  channelName,
-  CustomToolTip,
-  mediaChartReduce,
-  renderLegend,
-  yAxisTickFormatter,
-} from './MediaUtils';
-import useMediaStatus from "../hook/useMediaStatus";
-
+import { barColors, barKeys, CustomToolTip, mediaChartReduce, renderLegend, yAxisTickFormatter } from './MediaUtils';
+import useMediaStatus from '../hook/useMediaStatus';
 
 interface I_customToolTip {
   show: boolean;
@@ -24,23 +13,22 @@ interface I_customToolTip {
   };
   content: any;
 }
-type PeriodDate = {prev: Date, curr: Date}
+type PeriodDate = { prev: Date; curr: Date };
 type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
 type MediaStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
 
 export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
-  const [period,setPeriod] = useState<PeriodDate>({});
+  const [period, setPeriod] = useState<PeriodDate>({});
   const [tooltip, setToolTip] = useState<I_customToolTip>();
   const { loading, mediaStatus, getMediaStatus } = useMediaStatus();
-  
-  useEffect(()=>{
-  getMediaStatus({
-      gte:selectedPeriod?.startDate,
-      lte:selectedPeriod?.endDate
-    })
-  },[selectedPeriod])
-  const mediaData = mediaChartReduce(mediaStatus);
-  
+
+  useEffect(() => {
+    getMediaStatus({
+      gte: selectedPeriod?.startDate,
+      lte: selectedPeriod?.endDate,
+    });
+  }, [selectedPeriod]);
+
   const showTooltip = (data: any) => {
     const name: string = data.tooltipPayload[0].dataKey;
     const value = data.tooltipPayload[0].payload[name.split('.')[0]][name.split('.')[1]];
@@ -59,8 +47,8 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
     });
   };
 
-  if(loading){
-    return <div></div>
+  if (loading) {
+    return <div></div>;
   }
 
   return (
@@ -73,7 +61,7 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
               width={500}
               height={700}
               stackOffset="expand"
-              data={mediaData}
+              data={mediaStatus && mediaChartReduce(mediaStatus)}
               margin={{
                 top: 20,
                 right: 30,
@@ -172,7 +160,7 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
         {/* {tooltip?.show && (
                 <CustomToolTip {...tooltip} />
               )} */}
-        <MediaTable mediaStatus={mediaStatus} />
+        {mediaStatus && <MediaTable mediaStatus={mediaStatus} />}
         {tooltip?.show && <CustomToolTip {...tooltip} />}
       </Wrap>
     </Container>

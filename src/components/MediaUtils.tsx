@@ -1,28 +1,28 @@
-import styled from "styled-components";
-import { DailyMediaStatus } from "../interfaces/database";
+import styled from 'styled-components';
+import { DailyMediaStatus } from '../interfaces/database';
 interface I_legendPayload {
-  color: string,
-  dataKey: string,
-  inactive: boolean,
-  payload: object,
-  type: string,
-  value: string,
+  color: string;
+  dataKey: string;
+  inactive: boolean;
+  payload: object;
+  type: string;
+  value: string;
 }
 export interface I_barColors {
-    kakao: string,
-    google: string,
-    naver: string,
-    facebook :string
-  }
+  kakao: string;
+  google: string;
+  naver: string;
+  facebook: string;
+}
 interface I_CustomToolTip {
-  position:{
-    x:number,
-    y:number
-  },
-  content:{
-    name:string,
-    value:number
-  }
+  position: {
+    x: number;
+    y: number;
+  };
+  content: {
+    name: string;
+    value: number;
+  };
 }
 const channelId = {
   cost: 0,
@@ -34,189 +34,185 @@ const channelId = {
   ctr: 6,
   cpc: 7,
   cpa: 8,
-}
-export const barKeys = [['cost.kakao', 'cost.google', 'cost.naver', 'cost.facebook'],
+};
+export const barKeys = [
+  ['cost.kakao', 'cost.google', 'cost.naver', 'cost.facebook'],
   ['imp.kakao', 'imp.google', 'imp.naver', 'imp.facebook'],
   ['click.kakao', 'click.google', 'click.naver', 'click.facebook'],
   ['convValue.kakao', 'convValue.google', 'convValue.naver', 'convValue.facebook'],
-  ['cvr.kakao', 'cvr.google', 'cvr.naver', 'cvr.facebook']
+  ['cvr.kakao', 'cvr.google', 'cvr.naver', 'cvr.facebook'],
 ];
-export const barColors:I_barColors = {
-    kakao: "#f9E000",
-    google: "#AC8AF8",
-    naver: "#85DA47",
-    facebook :"#4FADF7"
-  }
+export const barColors: I_barColors = {
+  kakao: '#f9E000',
+  google: '#AC8AF8',
+  naver: '#85DA47',
+  facebook: '#4FADF7',
+};
 export const channelName = {
-  facebook:"페이스북",
-  naver:"네이버",
-  kakao:"카카오",
-  google:"구글"
-}
-export const mediaChartReduce = (arrData:DailyMediaStatus) => {
-    return arrData?.reduce((obj:any,val:any,i:number) => {
-            obj[channelId.cost] = {
-              cost:{
-                [val.channel]:val.cost,
-                ...obj[channelId.cost]?.cost,
-              },
-              name:"광고비",
-              total: obj[channelId.cost] === undefined ? val.cost : obj[channelId.cost].total + val.cost,
-            },
-            obj[channelId.convValue] = {
-              convValue:{
-                [val.channel]:val.convValue,
-                ...obj[channelId.convValue]?.convValue,
-              },
-              name:"매출",
-              total: obj[channelId.convValue] === undefined ? val.convValue : obj[channelId.convValue].total + val.convValue,
-            },
-            obj[channelId.imp] = {
-              imp:{
-                [val.channel]:val.imp,
-                ...obj[channelId.imp]?.imp,
-              },
-              name:"노출수",
-              total: obj[channelId.imp] === undefined ? val.imp : obj[channelId.imp].total + val.imp,
-            },
-            obj[channelId.click] = {
-              click:{
-                [val.channel]:val.click,
-                ...obj[channelId.click]?.click,
-              },
-              name:"클릭 수",
-              total: obj[channelId.click] === undefined ? val.click : obj[channelId.click].total + val.click,
-            },
-            obj[channelId.cvr] = {
-              cvr:{
-                [val.channel]:val.cvr,
-                ...obj[channelId.cvr]?.cvr,
-              },
-              name:"전환수",
-              total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
-            }
-          return obj
-    },[])
-}
-export const mediaTableReduce = (arrData:DailyMediaStatus) => {
-    return arrData?.reduce((obj:any,val:any,i:number) => {
-            obj[channelId.cost] = {
-              cost:{
-                [val.channel]:val.cost,
-                ...obj[channelId.cost]?.cost,
-              },
-              name:"광고비",
-              total: obj[channelId.cost] === undefined ? val.cost : obj[channelId.cost].total + val.cost,
-            },
-            obj[channelId.convValue] = {
-              convValue:{
-                [val.channel]:val.convValue,
-                ...obj[channelId.convValue]?.convValue,
-              },
-              name:"매출",
-              total: obj[channelId.convValue] === undefined ? val.convValue : obj[channelId.convValue].total + val.convValue,
-            },
-            obj[channelId.imp] = {
-              imp:{
-                [val.channel]:val.imp,
-                ...obj[channelId.imp]?.imp,
-              },
-              name:"노출수",
-              total: obj[channelId.imp] === undefined ? val.imp : obj[channelId.imp].total + val.imp,
-            },
-            obj[channelId.click] = {
-              click:{
-                [val.channel]:val.click,
-                ...obj[channelId.click]?.click,
-              },
-              name:"클릭 수",
-              total: obj[channelId.click] === undefined ? val.click : obj[channelId.click].total + val.click,
-            },
-            obj[channelId.cvr] = {
-              cvr:{
-                [val.channel]:val.cvr,
-                ...obj[channelId.cvr]?.cvr,
-              },
-              name:"전환수",
-              total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
-            },
-            obj[channelId.roas] = {
-              roas:{
-                [val.channel]:val.roas,
-                ...obj[channelId.roas]?.roas,
-              },
-              name:"비용 대비 매출",
-              total: obj[channelId.roas] === undefined ? val.roas : obj[channelId.roas].total + val.roas,
-            },
-            obj[channelId.cpc] = {
-              cpc:{
-                [val.channel]:val.cpc,
-                ...obj[channelId.cpc]?.cpc,
-              },
-              name:"클릭 비용",
-              total: obj[channelId.cpc] === undefined ? val.cpc : obj[channelId.cpc].total + val.cpc,
-            },
-            obj[channelId.cpa] = {
-              cpa:{
-                [val.channel]:val.cpa,
-                ...obj[channelId.cpa]?.cpa,
-              },
-              name:"가입 비용",
-              total: obj[channelId.cpa] === undefined ? val.cpa : obj[channelId.cpa].total + val.cpa,
-            },
-            obj[channelId.ctr] = {
-              ctr:{
-                [val.channel]:val.ctr,
-                ...obj[channelId.ctr]?.ctr,
-              },
-              name:"노출 대비 클릭수",
-              total: obj[channelId.ctr] === undefined ? val.ctr : obj[channelId.ctr].total + val.ctr,
-            }    
-          return obj
-    },[])
-}
-export const yAxisTickFormatter = (tick:number) => {
-    const ticks:string[] = [];
-    if(tick !== 0){
-      ticks.push(`${tick * 100}%`)
-    } 
-    return tick === 0 ? "" : `${tick * 100}%`;
+  facebook: '페이스북',
+  naver: '네이버',
+  kakao: '카카오',
+  google: '구글',
+};
+export const mediaChartReduce = (arrData: DailyMediaStatus[]) => {
+  return arrData?.reduce((obj: any, val: any, i: number) => {
+    (obj[channelId.cost] = {
+      cost: {
+        [val.channel]: val.cost,
+        ...obj[channelId.cost]?.cost,
+      },
+      name: '광고비',
+      total: obj[channelId.cost] === undefined ? val.cost : obj[channelId.cost].total + val.cost,
+    }),
+      (obj[channelId.convValue] = {
+        convValue: {
+          [val.channel]: val.convValue,
+          ...obj[channelId.convValue]?.convValue,
+        },
+        name: '매출',
+        total: obj[channelId.convValue] === undefined ? val.convValue : obj[channelId.convValue].total + val.convValue,
+      }),
+      (obj[channelId.imp] = {
+        imp: {
+          [val.channel]: val.imp,
+          ...obj[channelId.imp]?.imp,
+        },
+        name: '노출수',
+        total: obj[channelId.imp] === undefined ? val.imp : obj[channelId.imp].total + val.imp,
+      }),
+      (obj[channelId.click] = {
+        click: {
+          [val.channel]: val.click,
+          ...obj[channelId.click]?.click,
+        },
+        name: '클릭 수',
+        total: obj[channelId.click] === undefined ? val.click : obj[channelId.click].total + val.click,
+      }),
+      (obj[channelId.cvr] = {
+        cvr: {
+          [val.channel]: val.cvr,
+          ...obj[channelId.cvr]?.cvr,
+        },
+        name: '전환수',
+        total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
+      });
+    return obj;
+  }, []);
+};
+export const mediaTableReduce = (arrData: DailyMediaStatus[]) => {
+  return arrData?.reduce((obj: any, val: any, i: number) => {
+    (obj[channelId.cost] = {
+      cost: {
+        [val.channel]: val.cost,
+        ...obj[channelId.cost]?.cost,
+      },
+      name: '광고비',
+      total: obj[channelId.cost] === undefined ? val.cost : obj[channelId.cost].total + val.cost,
+    }),
+      (obj[channelId.convValue] = {
+        convValue: {
+          [val.channel]: val.convValue,
+          ...obj[channelId.convValue]?.convValue,
+        },
+        name: '매출',
+        total: obj[channelId.convValue] === undefined ? val.convValue : obj[channelId.convValue].total + val.convValue,
+      }),
+      (obj[channelId.imp] = {
+        imp: {
+          [val.channel]: val.imp,
+          ...obj[channelId.imp]?.imp,
+        },
+        name: '노출수',
+        total: obj[channelId.imp] === undefined ? val.imp : obj[channelId.imp].total + val.imp,
+      }),
+      (obj[channelId.click] = {
+        click: {
+          [val.channel]: val.click,
+          ...obj[channelId.click]?.click,
+        },
+        name: '클릭 수',
+        total: obj[channelId.click] === undefined ? val.click : obj[channelId.click].total + val.click,
+      }),
+      (obj[channelId.cvr] = {
+        cvr: {
+          [val.channel]: val.cvr,
+          ...obj[channelId.cvr]?.cvr,
+        },
+        name: '전환수',
+        total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
+      }),
+      (obj[channelId.roas] = {
+        roas: {
+          [val.channel]: val.roas,
+          ...obj[channelId.roas]?.roas,
+        },
+        name: '비용 대비 매출',
+        total: obj[channelId.roas] === undefined ? val.roas : obj[channelId.roas].total + val.roas,
+      }),
+      (obj[channelId.cpc] = {
+        cpc: {
+          [val.channel]: val.cpc,
+          ...obj[channelId.cpc]?.cpc,
+        },
+        name: '클릭 비용',
+        total: obj[channelId.cpc] === undefined ? val.cpc : obj[channelId.cpc].total + val.cpc,
+      }),
+      (obj[channelId.cpa] = {
+        cpa: {
+          [val.channel]: val.cpa,
+          ...obj[channelId.cpa]?.cpa,
+        },
+        name: '가입 비용',
+        total: obj[channelId.cpa] === undefined ? val.cpa : obj[channelId.cpa].total + val.cpa,
+      }),
+      (obj[channelId.ctr] = {
+        ctr: {
+          [val.channel]: val.ctr,
+          ...obj[channelId.ctr]?.ctr,
+        },
+        name: '노출 대비 클릭수',
+        total: obj[channelId.ctr] === undefined ? val.ctr : obj[channelId.ctr].total + val.ctr,
+      });
+    return obj;
+  }, []);
+};
+export const yAxisTickFormatter = (tick: number) => {
+  const ticks: string[] = [];
+  if (tick !== 0) {
+    ticks.push(`${tick * 100}%`);
   }
-export const CustomToolTip = ({position,content}:I_CustomToolTip) => {
-  const {x,y} = position || {};
-  const name:string = content.name.split(".")[1];
-  return(
-      <Tip
-      style={{ left:`${x}px`, top:`${y+8}px`}}
-      >
-        <span style={{fontSize:"12px",color:`${barColors[name]}`}}>{channelName[content.name.split(".")[1]]}</span>
-        <span>{content.value}</span>
-        <Speech>
-          <Bubble style={{ left:"40.3%", top:`${y-20}px`}} />
-        </Speech>
-
-      </Tip>
-  )
-}
-export const renderLegend = ({payload}:I_legendPayload) => {
-  const result = payload.reduce((obj:any,val:I_legendPayload)=>{
-    return obj.includes(val.dataKey.split(".")[1]) ? obj : [...obj,val.dataKey.split(".")[1]]
-  },[])
-    return (
+  return tick === 0 ? '' : `${tick * 100}%`;
+};
+export const CustomToolTip = ({ position, content }: I_CustomToolTip) => {
+  const { x, y } = position || {};
+  const name: string = content.name.split('.')[1];
+  return (
+    <Tip style={{ left: `${x}px`, top: `${y + 8}px` }}>
+      <span style={{ fontSize: '12px', color: `${barColors[name]}` }}>{channelName[content.name.split('.')[1]]}</span>
+      <span>{content.value}</span>
+      <Speech>
+        <Bubble style={{ left: '40.3%', top: `${y - 20}px` }} />
+      </Speech>
+    </Tip>
+  );
+};
+export const renderLegend = ({ payload }: I_legendPayload) => {
+  const result = payload.reduce((obj: any, val: I_legendPayload) => {
+    return obj.includes(val.dataKey.split('.')[1]) ? obj : [...obj, val.dataKey.split('.')[1]];
+  }, []);
+  return (
     <LegendUl>
-      {
-        result.map((item:string, index:number) => {
-          return(
-            <LegendLi key={`${item}-${index}`}>
-              <LegendCircle style={{backgroundColor:`${barColors[item]}`}}/>
-              <LegendValue key={`item-${index}`}>{channelName[item]}</LegendValue>
-            </LegendLi>
-          )
-        })
-      }
+      {result.map((item: string, index: number) => {
+        return (
+          <LegendLi key={`${item}-${index}`}>
+            <LegendCircle style={{ backgroundColor: `${barColors[item]}` }} />
+            <LegendValue key={`item-${index}`}>{channelName[item]}</LegendValue>
+          </LegendLi>
+        );
+      })}
     </LegendUl>
   );
-}
+};
 
 const LegendUl = styled.ul`
   display: flex;
@@ -244,11 +240,11 @@ const Tip = styled.div`
   padding: 0.3rem;
   flex-direction: column;
   border-radius: 5px;
-  background-color: #39474E;
+  background-color: #39474e;
   width: 7rem;
   height: 2.8rem;
   z-index: 2;
-  span{
+  span {
     color: #fff;
     text-align: center;
   }
@@ -262,5 +258,5 @@ const Bubble = styled.div`
   border-width: 15px 10px 10px 10px;
   border-style: solid;
   border-radius: 6px;
-  border-color: #39474E transparent transparent transparent;
+  border-color: #39474e transparent transparent transparent;
 `;

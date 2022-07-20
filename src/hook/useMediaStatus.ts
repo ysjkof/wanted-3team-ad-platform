@@ -12,14 +12,14 @@ function useMediaStatus(queryOptions?: QueryOptions) {
   const getMediaStatus = async (queryOptions: QueryOptions) => {
     setLoading(true);
     setMediaStatus(
-         returnDataIfExistInCache(queryOptions) ||
-         saveInCacheAndReturnData(queryOptions, await mediaStatusModel.getPeriod(queryOptions)),
+      returnDataIfExistInCache(queryOptions) ||
+        saveInCacheAndReturnData(queryOptions, await mediaStatusModel.getPeriod(queryOptions)),
     );
     setLoading(false);
   };
 
   useEffect(() => {
-    getMediaStatus(queryOptions);
+    if (queryOptions) getMediaStatus(queryOptions);
   }, []);
 
   return { loading, mediaStatus, getMediaStatus };

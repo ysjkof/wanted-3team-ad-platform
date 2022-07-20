@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { QueryOptions } from '../api/httpRequest';
 import { DailyAdStatus } from '../interfaces/database';
 import totalAdStatusModel from '../models/totalAdStatusModel';
@@ -47,7 +47,7 @@ function useTotalAdStatus(queryOptions?: QueryOptions) {
   };
 
   useEffect(() => {
-    queryOptions ? getTotalAdStatus(queryOptions) : null;
+    if (queryOptions) getTotalAdStatus(queryOptions);
   }, []);
 
   return { loading, totalAdStatus, getTotalAdStatus };
