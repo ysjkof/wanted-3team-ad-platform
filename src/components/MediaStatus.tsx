@@ -1,5 +1,5 @@
-import styled from "styled-components"
-import {media} from './mediaDataExample'
+import styled from 'styled-components';
+import { media } from './mediaDataExample';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip } from 'recharts';
 import { useState } from "react";
 import { DailyMediaReport } from "../databaseTypes";
@@ -7,16 +7,16 @@ import MediaTable from "./MediaTable";
 import { barColors, barKeys, channelName, CustomToolTip, mediaChartReduce, renderLegend, xAxisTickFormatter ,yAxisTickFormatter } from "./MediaUtils";
 
 interface I_customToolTip {
-  show:boolean,
-  position:{
-    x:number,
-    y:number
-  },
-  content:any
+  show: boolean;
+  position: {
+    x: number;
+    y: number;
+  };
+  content: any;
 }
 
 type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
-type TotalAdStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
+type MediaStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
 
 export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
   const beforeDate = "2022-02-01";
@@ -41,8 +41,15 @@ const leaveTooltip = () => {
     content: {name:"",value:""}
   })
 }
-
-
+    return (
+      <div style={{ left: 'x', top: 'y', width: '50px', height: '50px', backgroundColor: 'blueviolet' }}>{content}</div>
+    );
+  };
+  // const CustomToolTip = ({ active, payload, label }) => {
+  //   // console.log("액티브",active);
+  //   // console.log("페이로드",payload);
+  //   // console.log("라벨",label);
+  // }
 
   return (
   <Container>
@@ -94,8 +101,8 @@ const leaveTooltip = () => {
           })}
             </BarChart>
           </ResponsiveContainer>
-      </Chart>
-      {/* {tooltip?.show && (
+        </Chart>
+        {/* {tooltip?.show && (
                 <CustomToolTip {...tooltip} />
               )} */}
       <MediaTable />
@@ -110,7 +117,6 @@ const Title = styled.h2`
   margin-bottom: 1.2rem;
 `;
 const Container = styled.div`
-  padding-top: 4.5rem;
   width: 100%;
   height: 100%;
 `;
@@ -119,14 +125,13 @@ const Wrap = styled.div`
   margin: 0 auto;
   background-color: white;
   border-radius: 15px;
-  
+  > * {
+    margin-bottom: 1.2rem;
+    margin: auto;
+  }
 `;
 const Chart = styled.div`
   width: 100%;
-  height: 24rem;
-  margin: 0 auto;
-  padding-top:4rem;
+  height: 20rem;
+  padding-top: 4rem;
 `;
-
-
-/*  */
