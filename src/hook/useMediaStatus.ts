@@ -10,8 +10,6 @@ function useMediaStatus(queryOptions?: QueryOptions) {
   const { returnDataIfExistInCache, saveInCacheAndReturnData } = useCache<DailyMediaStatus[]>();
 
   const getMediaStatus = async (queryOptions: QueryOptions) => {
-    console.log("훅 쿼리",queryOptions);
-    
     setLoading(true);
     setMediaStatus(
         await mediaStatusModel.getPeriod(queryOptions),
