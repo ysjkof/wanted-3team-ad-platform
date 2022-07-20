@@ -12,7 +12,8 @@ function useMediaStatus(queryOptions?: QueryOptions) {
   const getMediaStatus = async (queryOptions: QueryOptions) => {
     setLoading(true);
     setMediaStatus(
-        await mediaStatusModel.getPeriod(queryOptions),
+         returnDataIfExistInCache(queryOptions) ||
+         saveInCacheAndReturnData(queryOptions, await mediaStatusModel.getPeriod(queryOptions)),
     );
     setLoading(false);
   };
