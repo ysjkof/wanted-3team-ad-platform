@@ -10,8 +10,6 @@ class MediaStatusModel {
 
   async getPeriod({ gte, lte, queryField = 'date' }: QueryOptions) {
     const { data } = await this.service.getBetween({ gte, lte, queryField });
-    console.log(data);
-    
     return data;
   }
 }
