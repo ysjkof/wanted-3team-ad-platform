@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import AdForm from '../components/AdForm';
 
-export default function CreateAd() {
+export default function ModifyAd() {
   return (
     <Container>
-      <h1>광고 만들기</h1>
-      <AdForm mode="create" />
+      <h1>광고 수정</h1>
+      <AdForm mode="modify" />
     </Container>
   );
 }

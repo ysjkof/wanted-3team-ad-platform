@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { Advertising } from '../interfaces/database';
-import useAdvertisingManagementQuery from '../hook/useAdvertisingManagement';
+import { Advertising, AdvertisingStatus } from '../interfaces/database';
 import { HandleDeleteClick } from '../pages/Management';
 import { theme } from '../styles/theme';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   Content: Advertising;
@@ -10,6 +10,7 @@ interface Props {
 }
 
 export default function AdCard({ Content, handleDeleteClick }: Props) {
+  const navigate = useNavigate();
   const statusType = {
     active: '진행중',
     ended: '종료',
@@ -20,6 +21,12 @@ export default function AdCard({ Content, handleDeleteClick }: Props) {
   const numberWithCommas = (number: number) => {
     return number.toLocaleString();
   };
+
+  const navigateToModify = () => {
+    navigate(`/modify/${Content.id}`);
+  };
+
+  const isDeleteDisabled = Content.status === 'ended';
 
   return (
     <Container>
@@ -49,7 +56,9 @@ export default function AdCard({ Content, handleDeleteClick }: Props) {
         {numberWithCommas(Content.report!.cost)}원
       </Information>
       <ButtonContainer>
-        <EditButton>수정하기</EditButton>
+        <EditButton onClick={navigateToModify} disabled={isDeleteDisabled}>
+          수정하기
+        </EditButton>
         <DeleteButton onClick={() => handleDeleteClick(Content.id)}>삭제</DeleteButton>
       </ButtonContainer>
     </Container>
@@ -94,7 +103,7 @@ const EditButton = styled.button`
   border: 1px solid ${theme.borderColor};
   border-radius: 10px;
   color: ${theme.darkFontColor};
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 `;
 
 const DeleteButton = styled(EditButton)`
