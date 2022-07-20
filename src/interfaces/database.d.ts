@@ -45,5 +45,5 @@ export interface Advertising {
   budget: number;
   adType: AdType;
   report?: AdvertisingReport;
-  endDate?: string | null;
+  endDate: string | null;
 }
