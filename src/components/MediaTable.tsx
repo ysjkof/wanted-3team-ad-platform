@@ -96,5 +96,4 @@ const Li = styled.li`
   font-weight: bold;
   height: 2.2rem;
   align-items: center;
-  text-align: left;
 `;
