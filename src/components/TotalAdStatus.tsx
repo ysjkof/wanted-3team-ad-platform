@@ -75,11 +75,14 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
   };
 
   const getWeeklyChange = (prev: TotalReport, curr: TotalReport): TotalReport => {
-    let result: TotalReport = prev;
-    for (const key in prev) {
-      result[key as keyof typeof prev] = curr[key as keyof typeof prev] - prev[key as keyof typeof prev];
+    if (prevWeek === null) return { roas: 0, cost: 0, imp: 0, click: 0, conv: 0, convValue: 0 };
+    else {
+      let result: TotalReport = prev;
+      for (const key in prev) {
+        result[key as keyof typeof prev] = curr[key as keyof typeof prev] - prev[key as keyof typeof prev];
+      }
+      return result;
     }
-    return result;
   };
 
   const currWeekTotalData = getWeekTotalData(currWeek);
@@ -90,32 +93,32 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
     {
       name: 'ROAS',
       value: `${currWeekTotalData?.roas}%`,
-      change: `${prevWeek === null ? '- ' : changeOfWeekTotalData?.roas}%`,
+      change: `${changeOfWeekTotalData?.roas}%`,
     },
     {
       name: '광고비',
       value: `${Math.round(currWeekTotalData?.cost / 10000).toLocaleString()}만원`,
-      change: `${prevWeek === null ? '- ' : Math.round(changeOfWeekTotalData?.cost / 10000).toLocaleString()}만원`,
+      change: `${Math.round(changeOfWeekTotalData?.cost / 10000).toLocaleString()}만원`,
     },
     {
       name: '노출수',
       value: `${Math.round(currWeekTotalData?.imp / 10000).toLocaleString()}만회`,
-      change: `${prevWeek === null ? '- ' : Math.round(changeOfWeekTotalData?.imp / 10000).toLocaleString()}만회`,
+      change: `${Math.round(changeOfWeekTotalData?.imp / 10000).toLocaleString()}만회`,
     },
     {
       name: '클릭수',
       value: `${currWeekTotalData?.click.toLocaleString()}회`,
-      change: `${prevWeek === null ? '- ' : changeOfWeekTotalData?.click.toLocaleString()}회`,
+      change: `${changeOfWeekTotalData?.click.toLocaleString()}회`,
     },
     {
       name: '전환수',
       value: `${currWeekTotalData?.conv.toLocaleString()}회`,
-      change: `${prevWeek === null ? '- ' : changeOfWeekTotalData?.conv.toLocaleString()}회`,
+      change: `${changeOfWeekTotalData?.conv.toLocaleString()}회`,
     },
     {
       name: '매출',
       value: `${Math.round(currWeekTotalData?.convValue / 10000).toLocaleString()}만원`,
-      change: `${prevWeek === null ? '- ' : Math.round(changeOfWeekTotalData?.convValue / 10000).toLocaleString()}만원`,
+      change: `${Math.round(changeOfWeekTotalData?.convValue / 10000).toLocaleString()}만원`,
     },
   ];
 
