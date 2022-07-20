@@ -37,7 +37,6 @@ export default function MediaTable() {
   )
 }
 
-
 const Table = styled.div`
   
   width: 92%;
@@ -54,7 +53,7 @@ const Wrap = styled.div`
     background: rgba(255, 255, 255, 0.4);
   }
   &::-webkit-scrollbar-thumb {
-    background: #D1D8DB;
+    background: #d1d8db;
     border-radius: 6px;
   }
 `;
@@ -63,9 +62,9 @@ const Item = styled.div`
   font-weight: bold;
   border-top: 1px solid #f5f6f7;
 `;
-const Name = styled.div<{dataName:string}>`
+const Name = styled.div<{ dataName: string }>`
   display: flex;
-  width: ${props => props.dataName.length > 6 ? "6rem" : "5rem" };
+  width: ${(props) => (props.dataName.length > 6 ? '6rem' : '5rem')};
   height: 2.2rem;
   margin-left: 3rem;
   align-items: center;
