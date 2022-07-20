@@ -24,8 +24,6 @@ type StartAndEndDate = { startDate: Date; endDate: Date };
 type TotalAdStatusProps = { selectedPeriod: StartAndEndDate };
 
 export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
-  const [prevWeek, setPrevWeek] = useState<WeekArr | null>();
-  const [currWeek, setCurrWeek] = useState<WeekArr>();
   const { loading, totalAdStatus, getTotalAdStatus } = useTotalAdStatus();
 
   useEffect(() => {
@@ -33,11 +31,9 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
       gte: selectedPeriod?.startDate,
       lte: selectedPeriod?.endDate,
     });
-    setPrevWeek(totalAdStatus?.prev);
-    setCurrWeek(totalAdStatus?.curr);
   }, [selectedPeriod, loading]);
 
-  const newTotal = currWeek?.map((data) => {
+  const newTotal = totalAdStatus?.curr?.map((data) => {
     const date = new Date(data.date);
     const dateString = `${date.getMonth() + 1}월 ${date.getDate()}일`;
     return { ...data, dateformat: dateString };
@@ -75,7 +71,7 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
   };
 
   const getWeeklyChange = (prev: TotalReport, curr: TotalReport): TotalReport => {
-    if (prevWeek === null) return { roas: 0, cost: 0, imp: 0, click: 0, conv: 0, convValue: 0 };
+    if (totalAdStatus?.prev === null) return { roas: 0, cost: 0, imp: 0, click: 0, conv: 0, convValue: 0 };
     else {
       let result: TotalReport = prev;
       for (const key in prev) {
@@ -85,8 +81,8 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
     }
   };
 
-  const currWeekTotalData = getWeekTotalData(currWeek);
-  const prevWeekTotalData = getWeekTotalData(prevWeek);
+  const currWeekTotalData = getWeekTotalData(totalAdStatus?.curr);
+  const prevWeekTotalData = getWeekTotalData(totalAdStatus?.prev);
   const changeOfWeekTotalData = getWeeklyChange(prevWeekTotalData, currWeekTotalData);
 
   const weeklyData: WeeklyTotalData = [
