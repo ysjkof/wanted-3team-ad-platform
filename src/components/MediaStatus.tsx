@@ -27,7 +27,7 @@ interface I_customToolTip {
 type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
 type MediaStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
 
-export default function MediaStatus({ selectedPeriod }: TotalAdStatusProps) {
+export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
   const beforeDate = '2022-02-01';
   const afterDate = '2022-02-07';
   const [tooltip, setToolTip] = useState<I_customToolTip>();
