@@ -25,7 +25,6 @@ export default function MediaTable() {
           return (
             <Item id="1234" key={`${data}-${index}`}>
               <Name dataName={data.name}>{data.name}</Name>
-              {/* style={{width: data.name.length > 6 && "6rem" }} */}
               {itemKey.map((item: string, itemIndex: number) => {
                 return (
                   <Value key={`${item}+${itemIndex}`}>{Math.floor(data[dataKey][item]).toLocaleString('ko-KR')}</Value>
@@ -43,10 +42,10 @@ export default function MediaTable() {
 }
 
 const Table = styled.div`
-  margin: 4rem 0 2.5rem 2rem;
   width: 92%;
   height: 17rem;
   font-size: 12px;
+  margin: 4rem 0 2.5rem 2rem;
 `;
 const Wrap = styled.div`
   display: flex;

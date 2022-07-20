@@ -251,7 +251,6 @@ const LegendUl = styled.ul`
   font-size: 12px;
   float: right;
   margin-top: 2rem;
-
 `;
 
 const LegendLi = styled.li`

@@ -5,6 +5,7 @@ import Test from '../pages/Test';
 import Dashboard from '../pages/Dashboard';
 import CreateAd from '../pages/CreateAd';
 import ModifyAd from '../pages/ModifyAd';
+import MediaStatus from '../components/MediaStatus';
 
 function Router() {
   return (
