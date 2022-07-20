@@ -27,13 +27,14 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
   const { loading, totalAdStatus, getTotalAdStatus } = useTotalAdStatus();
 
   useEffect(() => {
+    console.log('selectedPeriod: ', selectedPeriod);
     getTotalAdStatus({
-      gte: selectedPeriod.startDate,
-      lte: selectedPeriod.endDate,
+      gte: selectedPeriod?.startDate,
+      lte: selectedPeriod?.endDate,
     });
     setPrevWeek(totalAdStatus?.prev);
     setCurrWeek(totalAdStatus?.curr);
-    console.log(totalAdStatus, selectedPeriod.startDate, selectedPeriod.endDate);
+    // console.log(totalAdStatus, selectedPeriod.startDate, selectedPeriod.endDate);
   }, [selectedPeriod, loading]);
 
   const newTotal = currWeek?.map((data) => {
