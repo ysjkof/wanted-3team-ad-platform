@@ -4,7 +4,7 @@ import { DailyMediaStatus } from '../interfaces/database';
 import mediaStatusModel from '../models/mediaStatusModel';
 import { useCache } from './useCache';
 
-function useMediaStatus(queryOptions: QueryOptions) {
+function useMediaStatus(queryOptions?: QueryOptions) {
   const [mediaStatus, setMediaStatus] = useState<DailyMediaStatus[]>();
   const [loading, setLoading] = useState(true);
   const { returnDataIfExistInCache, saveInCacheAndReturnData } = useCache<DailyMediaStatus[]>();
@@ -12,8 +12,8 @@ function useMediaStatus(queryOptions: QueryOptions) {
   const getMediaStatus = async (queryOptions: QueryOptions) => {
     setLoading(true);
     setMediaStatus(
-      returnDataIfExistInCache(queryOptions) ||
-        saveInCacheAndReturnData(queryOptions, await mediaStatusModel.getPeriod(queryOptions)),
+         returnDataIfExistInCache(queryOptions) ||
+         saveInCacheAndReturnData(queryOptions, await mediaStatusModel.getPeriod(queryOptions)),
     );
     setLoading(false);
   };

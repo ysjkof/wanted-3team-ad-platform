@@ -1,11 +1,11 @@
 import styled from "styled-components"
-import { media } from "./mediaDataExample";
+import { DailyMediaStatus } from "../interfaces/database";
 import { mediaTableReduce } from "./MediaUtils";
-
-export default function MediaTable() {
-  const beforeDate = "2022-02-01";
-  const afterDate = "2022-02-07"
-  const mediaTableData = mediaTableReduce(media,beforeDate,afterDate);
+interface I_Props {
+  mediaStatus:DailyMediaStatus
+}
+export default function MediaTable({mediaStatus}:I_Props) {
+  const mediaTableData = mediaTableReduce(mediaStatus);
   return(
       <Table>
         <Wrap>
@@ -19,7 +19,7 @@ export default function MediaTable() {
               <Li style={{borderBottom:"1px solid #F5F6F7" , color:"#8190F7"}}>총계</Li>
             </Ul>
           </Channel>
-          {mediaTableData.map((data:any,index:number)=>{
+          {mediaTableData?.map((data:any,index:number)=>{
             const dataKey:string = Object.keys(data).find(key => key)!;
             const itemKey:object = Object.keys(data[dataKey])
             return(
@@ -32,19 +32,24 @@ export default function MediaTable() {
               </Item>
             )
           })}
+            <Gradient className="GRADIENT" />
         </Wrap>
       </Table>
   )
 }
 
 const Table = styled.div`
-  
   width: 92%;
   height: 17rem;
   font-size: 12px;
   margin: 4rem 0 2.5rem 2rem;
+  position: relative;
+  @media (max-width: 480px) {
+    margin: 2rem auto;
+  }
 `;
 const Wrap = styled.div`
+  width: 100%;
   display: flex;
   overflow-x: scroll;
   &::-webkit-scrollbar {
@@ -56,11 +61,15 @@ const Wrap = styled.div`
     background: #d1d8db;
     border-radius: 6px;
   }
+  padding-right: 2rem;
 `;
 const Item = styled.div`
   text-align: right;
   font-weight: bold;
   border-top: 1px solid #f5f6f7;
+  @media (max-width: 480px) {
+    margin-right: 1.5rem;
+  }
 `;
 const Name = styled.div<{ dataName: string }>`
   display: flex;
@@ -70,6 +79,10 @@ const Name = styled.div<{ dataName: string }>`
   align-items: center;
   justify-content: right;
   color: #bcc4cc;
+  @media (max-width: 480px) {
+    width: 2rem;
+    text-align: center;
+  }
 `;
 const Value = styled.div`
   display: flex;
@@ -95,4 +108,18 @@ const Li = styled.li`
   height: 2.2rem;
   align-items: center;
   text-align: left;
+`;
+
+const Gradient = styled.div`
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: 3rem;
+  height: 80%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 25%,
+    rgba(255, 255, 255, 1) 78%
+  );
 `;

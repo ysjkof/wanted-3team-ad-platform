@@ -1,17 +1,5 @@
 import styled from "styled-components";
-interface I_MediaData {
-  channel: String, // 채널
-  date: String, // 날짜
-  imp: Number, // 노출횟수
-  click: Number, // 클릭수
-  cost: Number, // 광고비용 / 비용
-  convValue: Number, // 매출
-  ctr: Number, // 광고 노출 대비 클릭 수
-  cvr: Number, // 전환 / 구매 전환율
-  cpc: Number, // 클릭당 비용
-  cpa: Number, // 가입까지 든 비용
-  roas: Number // 광고 대비 매출
-}
+import { DailyMediaStatus } from "../interfaces/database";
 interface I_legendPayload {
   color: string,
   dataKey: string,
@@ -36,7 +24,6 @@ interface I_CustomToolTip {
     value:number
   }
 }
-
 const channelId = {
   cost: 0,
   convValue: 1,
@@ -66,13 +53,8 @@ export const channelName = {
   kakao:"카카오",
   google:"구글"
 }
-export const mediaChartReduce = (arrData:I_MediaData[],before:string,after:string) => {
-    const startMonth = Number(before.split("-")[1]);
-    const startDate = Number(before.split("-")[2]);
-    const endDate = Number(after.split("-")[2]);
-    let count = Number(startDate);
+export const mediaChartReduce = (arrData:DailyMediaStatus) => {
     return arrData?.reduce((obj:any,val:any,i:number) => {
-        if(Number(val.date.split("-")[1]) === startMonth && Number(val.date.split("-")[2]) === count){
             obj[channelId.cost] = {
               cost:{
                 [val.channel]:val.cost,
@@ -113,18 +95,11 @@ export const mediaChartReduce = (arrData:I_MediaData[],before:string,after:strin
               name:"전환수",
               total: obj[channelId.cvr] === undefined ? val.cvr : obj[channelId.cvr].total + val.cvr,
             }
-            if(count !== endDate) count = count + 1;
-          }
           return obj
     },[])
 }
-export const mediaTableReduce = (arrData:I_MediaData[],before:string,after:string) => {
-    const startMonth = Number(before.split("-")[1]);
-    const startDate = Number(before.split("-")[2]);
-    const endDate = Number(after.split("-")[2]);
-    let count = Number(startDate);
+export const mediaTableReduce = (arrData:DailyMediaStatus) => {
     return arrData?.reduce((obj:any,val:any,i:number) => {
-        if(Number(val.date.split("-")[1]) === startMonth && Number(val.date.split("-")[2]) === count){
             obj[channelId.cost] = {
               cost:{
                 [val.channel]:val.cost,
@@ -196,9 +171,7 @@ export const mediaTableReduce = (arrData:I_MediaData[],before:string,after:strin
               },
               name:"노출 대비 클릭수",
               total: obj[channelId.ctr] === undefined ? val.ctr : obj[channelId.ctr].total + val.ctr,
-            }
-            if(count !== endDate) count = count + 1;
-          }
+            }    
           return obj
     },[])
 }
@@ -212,7 +185,6 @@ export const yAxisTickFormatter = (tick:number) => {
 export const CustomToolTip = ({position,content}:I_CustomToolTip) => {
   const {x,y} = position || {};
   const name:string = content.name.split(".")[1];
-  // style={{ left:`${(x-64)/16}rem`, top:`${y-50}px`, width:"8rem",height:"50px"}}
   return(
       <Tip
       style={{ left:`${x}px`, top:`${y+8}px`}}

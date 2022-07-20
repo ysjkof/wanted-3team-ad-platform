@@ -36,9 +36,11 @@ export default function Dashboard() {
       getPeriodOptions();
     });
   }, []);
+
   useEffect(() => {
     setSelectedPeriodOption(periodOptions[0]);
   }, [periodOptions]);
+
   useEffect(() => {
     if (totalDataRangeByDate.current.startDate && totalDataRangeByDate.current.endDate) getPeriodOptions();
   }, [selectedPeriodType]);
