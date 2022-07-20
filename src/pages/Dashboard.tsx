@@ -1,8 +1,8 @@
 import TotalAdStatus from '../components/TotalAdStatus';
 import MediaStatus from '../components/MediaStatus';
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
-import { getDataRangeByDate } from '../utils/getProcessedData';
+import { useEffect, useRef, useState } from 'react';
+import { getTotalDataRangeByDate } from '../utils/getProcessedData';
 import {
   addDays,
   addMonths,
@@ -25,25 +25,27 @@ enum PeriodType {
 const daysInWeek = 7;
 
 export default function Dashboard() {
-  const [dataRangeByDate, setDataRangeByDate] = useState<StartAndEndDate>({} as StartAndEndDate);
+  const totalDataRangeByDate = useRef<StartAndEndDate>({} as StartAndEndDate);
   const [selectedPeriodType, setSelectedPeriodType] = useState<PeriodType>(PeriodType.BY_WEEKLY);
   const [periodOptions, setPeriodOptions] = useState<PeriodOptions>([]);
   const [selectedPeriodOption, setSelectedPeriodOption] = useState<StartAndEndDate>({} as StartAndEndDate);
 
   useEffect(() => {
-    getDataRangeByDate().then((result) => {
-      setDataRangeByDate(result);
+    getTotalDataRangeByDate().then((result) => {
+      totalDataRangeByDate.current = result;
       getPeriodOptions();
     });
   }, []);
-
   useEffect(() => {
-    if (dataRangeByDate.startDate && dataRangeByDate.endDate) getPeriodOptions();
-  }, [dataRangeByDate, selectedPeriodType]);
+    setSelectedPeriodOption(periodOptions[0]);
+  }, periodOptions);
+  useEffect(() => {
+    if (totalDataRangeByDate.current.startDate && totalDataRangeByDate.current.endDate) getPeriodOptions();
+  }, [selectedPeriodType]);
 
   const getPeriodOptions = () => {
-    const startDate = dataRangeByDate?.startDate;
-    const endDate = dataRangeByDate?.endDate;
+    const startDate = totalDataRangeByDate.current.startDate;
+    const endDate = totalDataRangeByDate.current.endDate;
     if (selectedPeriodType === PeriodType.BY_WEEKLY) {
       setPeriodOptions(
         Array(Math.ceil(differenceInDays(endDate, startDate) / daysInWeek))
