@@ -4,7 +4,7 @@ import { theme } from '../styles/theme';
 export default function Header() {
   return (
     <>
-      <Container>
+      <Container className="header">
         <FiBell />
         <FiSettings />
         <FiUser />
@@ -35,5 +35,6 @@ const Container = styled.nav`
     top: 0;
     height: 15vw;
     border-bottom: none;
+    width: 100%;
   }
 `;

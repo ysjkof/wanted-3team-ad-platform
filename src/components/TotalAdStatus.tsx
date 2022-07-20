@@ -14,8 +14,6 @@ interface TotalReport {
   convValue: number;
 }
 
-type WeekArr = DailyAdStatus[];
-
 type singleDataCard = { name: string; value: string; change: string };
 
 type WeeklyTotalData = singleDataCard[];
@@ -26,8 +24,8 @@ type TotalAdStatusProps = { selectedPeriod: StartAndEndDate };
 export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
   const [prevWeek, setPrevWeek] = useState<WeekArr | null>();
   const [currWeek, setCurrWeek] = useState<WeekArr>();
-
   const { loading, totalAdStatus, getTotalAdStatus } = useTotalAdStatus();
+
 
   useEffect(() => {
     getTotalAdStatus({
