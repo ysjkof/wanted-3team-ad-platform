@@ -1,12 +1,9 @@
 import styled from "styled-components"
-import {media} from './mediaDataExample'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip } from 'recharts';
 import { useState } from "react";
-import { DailyMediaReport } from "../databaseTypes";
 import MediaTable from "./MediaTable";
 import { barColors, barKeys, channelName, CustomToolTip, mediaChartReduce, renderLegend ,yAxisTickFormatter } from "./MediaUtils";
 import useMediaStatus from "../hook/useMediaStatus";
-import { getDate } from "date-fns";
 import React from "react";
 
 interface I_customToolTip {
@@ -17,7 +14,7 @@ interface I_customToolTip {
   },
   content:any
 }
-
+type PeriodDate = {prev: Date, curr: Date}
 type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
 type MediaStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
 
@@ -26,30 +23,23 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
   const afterDate = "2022-02-07"
   const beDate = new Date(beforeDate);
   const afDate = new Date(afterDate)
-  const [data,setData] = useState();
+  const [period,setPeriod] = useState<PeriodDate>({});
   const [tooltip, setToolTip] = useState<I_customToolTip>();
-  const mediaData = mediaChartReduce(media, beforeDate, afterDate);
   const { loading, mediaStatus, getMediaStatus } = useMediaStatus();
-  console.log(beDate);
+    console.log("seletedPeriod",selectedPeriod);
+  
   
   React.useEffect(()=>{
-    getMediaStatus({
-      gte:beDate,
-      lte:afDate
+  getMediaStatus({
+      gte:selectedPeriod?.startDate,
+      lte:selectedPeriod?.endDate
     })
+  },[selectedPeriod])
+  const mediaData = mediaChartReduce(mediaStatus);
   
-  // setData(mediaStatus);
-
-
-  },[])
-  console.log("미디어",mediaStatus);
-
-  console.log(data);
-  
-  const showTooltip = (data: any, i: any, event: any) => {
+  const showTooltip = (data: any) => {
     const name: string = data.tooltipPayload[0].dataKey;
     const value = data.tooltipPayload[0].payload[name.split('.')[0]][name.split('.')[1]];
-
   setToolTip({
     show:true,
     position: {x:data.tooltipPosition.x-56,y:data.background.y},
@@ -63,6 +53,9 @@ const leaveTooltip = () => {
     content: {name:"",value:""}
   })
 }
+  if(loading){
+    return <div></div>
+  }
 
   return (
     <Container>
@@ -110,7 +103,6 @@ const leaveTooltip = () => {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' ? [5, 5, 0, 0] : null}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -124,7 +116,6 @@ const leaveTooltip = () => {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' ? [5, 5, 0, 0] : null}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -138,7 +129,6 @@ const leaveTooltip = () => {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' ? [5, 5, 0, 0] : null}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -152,7 +142,6 @@ const leaveTooltip = () => {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' ? [5, 5, 0, 0] : null}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -166,7 +155,6 @@ const leaveTooltip = () => {
                     fill={barColors[key.split('.')[1]]}
                     radius={key.split('.')[1] === 'facebook' && [5, 5, 0, 0]}
                     onMouseOver={showTooltip}
-                    onMouseLeave={leaveTooltip}
                   />,
                 );
                 return bars;
@@ -177,7 +165,7 @@ const leaveTooltip = () => {
       {/* {tooltip?.show && (
                 <CustomToolTip {...tooltip} />
               )} */}
-        <MediaTable />
+        <MediaTable mediaStatus={mediaStatus} />
         {tooltip?.show && <CustomToolTip {...tooltip} />}
       </Wrap>
     </Container>

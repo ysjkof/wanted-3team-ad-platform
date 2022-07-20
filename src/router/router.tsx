@@ -12,8 +12,8 @@ function Router() {
     <BrowserRouter>
       <Routes>
         <Route path="" element={<Layout />}>
-          <Route index element={<MediaStatus />} />
-          <Route path="dashboard" element={<MediaStatus />} />
+          <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="management" element={<Management />} />
           <Route path="create" element={<CreateAd />} />
           <Route path="modify/:adId" element={<ModifyAd />} />

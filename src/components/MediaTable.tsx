@@ -1,11 +1,13 @@
 import styled from "styled-components"
-import { media } from "./mediaDataExample";
+import { DailyMediaStatus } from "../interfaces/database";
 import { mediaTableReduce } from "./MediaUtils";
-
-export default function MediaTable() {
+interface I_Props {
+  mediaStatus:DailyMediaStatus
+}
+export default function MediaTable({mediaStatus}:I_Props) {
   const beforeDate = "2022-02-01";
   const afterDate = "2022-02-07"
-  const mediaTableData = mediaTableReduce(media,beforeDate,afterDate);
+  const mediaTableData = mediaTableReduce(mediaStatus);
   return(
       <Table>
         <Wrap>
@@ -19,7 +21,7 @@ export default function MediaTable() {
               <Li style={{borderBottom:"1px solid #F5F6F7" , color:"#8190F7"}}>총계</Li>
             </Ul>
           </Channel>
-          {mediaTableData.map((data:any,index:number)=>{
+          {mediaTableData?.map((data:any,index:number)=>{
             const dataKey:string = Object.keys(data).find(key => key)!;
             const itemKey:object = Object.keys(data[dataKey])
             return(
