@@ -1,26 +1,34 @@
-import styled from "styled-components"
-import {media} from './mediaDataExample'
+import styled from 'styled-components';
+import { media } from './mediaDataExample';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip } from 'recharts';
-import { useState } from "react";
-import { DailyMediaReport } from "../databaseTypes";
-import MediaTable from "./MediaTable";
-import { barColors, barKeys, channelName, CustomToolTip, mediaChartReduce, renderLegend ,yAxisTickFormatter } from "./MediaUtils";
+import { useState } from 'react';
+import { DailyMediaReport } from '../databaseTypes';
+import MediaTable from './MediaTable';
+import {
+  barColors,
+  barKeys,
+  channelName,
+  CustomToolTip,
+  mediaChartReduce,
+  renderLegend,
+  yAxisTickFormatter,
+} from './MediaUtils';
 
 interface I_customToolTip {
-  show:boolean,
-  position:{
-    x:number,
-    y:number
-  },
-  content:any
+  show: boolean;
+  position: {
+    x: number;
+    y: number;
+  };
+  content: any;
 }
 
 type StartAndEndDate = { startDate: Date; endDate: Date }; //한운기 추가
 type MediaStatusProps = { selectedPeriod: StartAndEndDate }; //한운기 추가
 
 export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
-  const beforeDate = "2022-02-01";
-  const afterDate = "2022-02-07"
+  const beforeDate = '2022-02-01';
+  const afterDate = '2022-02-07';
   const [tooltip, setToolTip] = useState<I_customToolTip>();
   const mediaData = mediaChartReduce(media, beforeDate, afterDate);
 
@@ -28,19 +36,19 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
     const name: string = data.tooltipPayload[0].dataKey;
     const value = data.tooltipPayload[0].payload[name.split('.')[0]][name.split('.')[1]];
 
-  setToolTip({
-    show:true,
-    position: {x:data.tooltipPosition.x-56,y:data.background.y},
-    content: {name:data.tooltipPayload[0].dataKey,value: Number.isInteger(value) ? value : value.toFixed(2)}
-  })
-}
-const leaveTooltip = () => {
-  setToolTip({
-    show:false,
-    position: {x:0,y:0},
-    content: {name:"",value:""}
-  })
-}
+    setToolTip({
+      show: true,
+      position: { x: data.tooltipPosition.x - 56, y: data.background.y },
+      content: { name: data.tooltipPayload[0].dataKey, value: Number.isInteger(value) ? value : value.toFixed(2) },
+    });
+  };
+  const leaveTooltip = () => {
+    setToolTip({
+      show: false,
+      position: { x: 0, y: 0 },
+      content: { name: '', value: '' },
+    });
+  };
 
   return (
     <Container>
@@ -69,6 +77,7 @@ const leaveTooltip = () => {
                 dy={10}
                 tick={{ fontSize: '12px', stroke: '#c5cace', fontFamily: 'Nanum Gothic' }}
                 tickLine={false}
+                interval={0}
               />
               <YAxis
                 tick={{ dy: 10, dx: 32, fontSize: '12px' }}
@@ -151,8 +160,8 @@ const leaveTooltip = () => {
               })}
             </BarChart>
           </ResponsiveContainer>
-      </Chart>
-      {/* {tooltip?.show && (
+        </Chart>
+        {/* {tooltip?.show && (
                 <CustomToolTip {...tooltip} />
               )} */}
         <MediaTable />
@@ -169,16 +178,20 @@ const Container = styled.div`
   padding-top: 4.5rem;
   width: 100%;
   height: 100%;
+  @media (max-width: 480px) {
+  }
+  tspan {
+    font-size: 0.6rem;
+  }
 `;
 const Wrap = styled.div`
   position: relative;
   margin: 0 auto;
   background-color: white;
   border-radius: 15px;
-
 `;
 const Chart = styled.div`
   width: 100%;
   height: 26rem;
-  padding-top:4rem;
+  padding-top: 4rem;
 `;
