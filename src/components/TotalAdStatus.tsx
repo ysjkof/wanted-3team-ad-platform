@@ -138,8 +138,12 @@ export default function TotalAdStatus({ selectedPeriod }: TotalAdStatusProps) {
           ))}
         </CardContainer>
         <ButtonContainer>
-          <button>roas</button>
-          <button>click</button>
+          <button>
+            <span className="roas"></span>roas
+          </button>
+          <button>
+            <span className="click"></span>click
+          </button>
         </ButtonContainer>
         <ChartContainer>
           <ResponsiveContainer width="100%" height="100%">
@@ -226,6 +230,19 @@ const ButtonContainer = styled.div`
     margin-right: 0.4rem;
     background: transparent;
     border: 2px solid ${theme.borderColor};
+    span {
+      display: inline-block;
+      margin-right: 6px;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      &.roas {
+        background-color: #8884d8;
+      }
+      &.click {
+        background-color: #82ca9d;
+      }
+    }
   }
 `;
 
