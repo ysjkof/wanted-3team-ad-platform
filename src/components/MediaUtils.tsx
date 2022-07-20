@@ -212,6 +212,7 @@ export const yAxisTickFormatter = (tick:number) => {
 export const CustomToolTip = ({position,content}:I_CustomToolTip) => {
   const {x,y} = position || {};
   const name:string = content.name.split(".")[1];
+  // style={{ left:`${(x-64)/16}rem`, top:`${y-50}px`, width:"8rem",height:"50px"}}
   return(
       <Tip
       style={{ left:`${x}px`, top:`${y+8}px`}}
@@ -250,7 +251,6 @@ const LegendUl = styled.ul`
   font-size: 12px;
   float: right;
   margin-top: 2rem;
-
 `;
 
 const LegendLi = styled.li`

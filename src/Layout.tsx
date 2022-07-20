@@ -14,7 +14,7 @@ function Layout() {
 export default Layout;
 
 const Container = styled.div`
-  width: 1024px;
+  width: 64rem;
   border: rgb(246, 248, 248) solid 1px;
   margin: auto;
   display: flex;

@@ -78,7 +78,7 @@ export default function Dashboard() {
 
   return (
     <Container>
-      <SubHeader>
+      <SubHeader className="sub_header">
         <h1>대시보드</h1>
         <DateSelectorsContainer>
           <select name="period_type" defaultValue={PeriodType.BY_WEEKLY} onChange={handlePeriodTypeChange}>
@@ -103,11 +103,13 @@ export default function Dashboard() {
 }
 
 const Container = styled.div`
-  overflow-y: scroll;
   width: 100%;
   height: fit-content;
   box-sizing: border-box;
   padding: 2rem;
+  > * {
+    margin-bottom: 3rem;
+  }
   * {
     border-radius: 0.625rem;
   }
@@ -116,7 +118,6 @@ const Container = styled.div`
 const SubHeader = styled.div`
   width: 100%;
   height: 3rem;
-  margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
   @media (max-width: 480px) {
@@ -145,7 +146,9 @@ const DateSelectorsContainer = styled.div`
     }
   }
   @media (max-width: 480px) {
+    width: 100%;
     * {
+      font-size: 0.8rem;
       margin-left: 0;
       margin-right: 1rem;
       background-color: white;

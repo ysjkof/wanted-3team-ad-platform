@@ -25,7 +25,6 @@ export default function MediaTable() {
             return(
               <Item id="1234" key={`${data}-${index}`} >
                 <Name dataName={data.name}>{data.name}</Name>
-                {/* style={{width: data.name.length > 6 && "6rem" }} */}
                 {itemKey.map((item:string,itemIndex:number)=>{
                   return <Value key={`${item}+${itemIndex}`}>{Math.floor(data[dataKey][item]).toLocaleString('ko-KR')}</Value>
                 })}
@@ -40,11 +39,11 @@ export default function MediaTable() {
 
 
 const Table = styled.div`
-  margin: 4rem 0 2.5rem 2rem;
+  
   width: 92%;
   height: 17rem;
   font-size: 12px;
-  
+  margin: 4rem 0 2.5rem 2rem;
 `;
 const Wrap = styled.div`
   display: flex;
@@ -62,7 +61,7 @@ const Wrap = styled.div`
 const Item = styled.div`
   text-align: right;
   font-weight: bold;
-  border-top: 1px solid #F5F6F7;
+  border-top: 1px solid #f5f6f7;
 `;
 const Name = styled.div<{dataName:string}>`
   display: flex;
@@ -71,14 +70,14 @@ const Name = styled.div<{dataName:string}>`
   margin-left: 3rem;
   align-items: center;
   justify-content: right;
-  color: #BCC4CC;
+  color: #bcc4cc;
 `;
 const Value = styled.div`
   display: flex;
   height: 2.2rem;
   align-items: center;
   justify-content: right;
-  border-top: 1px solid #F5F6F7;
+  border-top: 1px solid #f5f6f7;
 `;
 const Channel = styled.div`
   display: table;
@@ -89,11 +88,12 @@ const Ul = styled.ul`
   display: flex;
 `;
 const Li = styled.li`
-  border-top: 1px solid #F5F6F7;
+  border-top: 1px solid #f5f6f7;
   display: flex;
-  width: 6rem;
+  width: 3rem;
   font-size: 12px;
   font-weight: bold;
   height: 2.2rem;
   align-items: center;
+  text-align: left;
 `;

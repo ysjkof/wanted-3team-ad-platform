@@ -4,7 +4,7 @@ import { theme } from '../styles/theme';
 export default function Header() {
   return (
     <>
-      <Container>
+      <Container className="header">
         <FiBell />
         <FiSettings />
         <FiUser />
@@ -15,11 +15,11 @@ export default function Header() {
 }
 
 const Container = styled.nav`
-  position: sticky;
+  position: fixed;
   top: 0;
   box-sizing: border-box;
   z-index: 5;
-  width: 100%;
+  width: calc(64rem * 0.8);
   height: 3rem;
   padding-right: 1rem;
   border-bottom: ${theme.borderColor} 1px solid;
@@ -35,5 +35,6 @@ const Container = styled.nav`
     top: 0;
     height: 15vw;
     border-bottom: none;
+    width: 100%;
   }
 `;
