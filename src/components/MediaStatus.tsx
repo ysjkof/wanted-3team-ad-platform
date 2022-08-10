@@ -157,9 +157,6 @@ export default function MediaStatus({ selectedPeriod }: MediaStatusProps) {
             </BarChart>
           </ResponsiveContainer>
         </Chart>
-        {/* {tooltip?.show && (
-                <CustomToolTip {...tooltip} />
-              )} */}
         {mediaStatus && <MediaTable mediaStatus={mediaStatus} />}
         {tooltip?.show && <CustomToolTip {...tooltip} />}
       </Wrap>
