@@ -1,5 +1,22 @@
 # wanted-3team-ad-platform
 
+## 프로젝트 실행 방법
+
+1. 프로젝트 다운로드 후 압축해제
+2. 프로젝트 폴더 최상단에서 터미널 명령어 실행
+   1. `npm run install` : 패키지 설치(nodejs가 설치돼 있어야 합니다)
+   2. `npm run dev` : 프로젝트와 json-server가 동시에 실행됩니다
+3. 브라우저에서 `http://localhost:3000` 주소로 접속
+
+### 프로젝트 실행이 안될 때
+
+아래 경고가 나오며 실행이 안된다면 node_modules와 package-lock.json파일을 삭제 후 다시 패키지 설치부터 진행하면 해결된다. [참조, esbuild와 vite의 종속성 문제](https://stackoverflow.com/questions/71837533/why-vite-js-doesnt-work-when-i-use-npm-run-dev)
+
+```bash
+sh: vite: command not found
+```
+
+
 ## 역할분담
 
 ### 한운기
